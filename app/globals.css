@@ -4,7 +4,6 @@
 
 @layer base {
   :root {
-    /* Font variables injected by next/font */
     --font-fraunces: "Fraunces", Georgia, serif;
     --font-dm-sans: "DM Sans", system-ui, sans-serif;
 
