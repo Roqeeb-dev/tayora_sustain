@@ -1,26 +1,136 @@
-@import "tailwindcss";
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
+@layer base {
   :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+    /* Font variables injected by next/font */
+    --font-fraunces: "Fraunces", Georgia, serif;
+    --font-dm-sans: "DM Sans", system-ui, sans-serif;
+
+    /* ── Brand Core ── */
+    --color-brown: #240a00;
+    --color-brown-deep: #1a0700;
+    --color-brown-mid: #6b2e1a;
+    --color-brown-warm: #a0522d;
+    --color-plaster: #d3bab0;
+    --color-plaster-muted: #b0948a;
+    --color-beige: #f5efea;
+    --color-beige-soft: #f9f6f3;
+    --color-beige-hover: #ede4de;
+    --color-white: #ffffff;
+
+    /* ── Semantic ── */
+    --surface-base: var(--color-beige);
+    --surface-card: var(--color-white);
+    --surface-subtle: var(--color-beige-soft);
+    --surface-hover: var(--color-beige-hover);
+    --surface-border: var(--color-plaster);
+
+    --content-primary: var(--color-brown);
+    --content-secondary: #333333;
+    --content-muted: var(--color-plaster-muted);
+    --content-inverse: var(--color-white);
+
+    /* ── Status ── */
+    --status-pending: #c8860a;
+    --status-approved: #2d6a4f;
+    --status-matched: #2c5f8a;
+    --status-collected: var(--color-brown);
+    --status-delivered: #5c3d7a;
+    --status-rejected: #9b2335;
+  }
+
+  * {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+  }
+
+  html {
+    scroll-behavior: smooth;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  body {
+    background-color: var(--surface-base);
+    color: var(--content-secondary);
+    font-family: var(--font-dm-sans);
+    line-height: 1.6;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    font-family: var(--font-fraunces);
+    color: var(--content-primary);
+    line-height: 1.2;
   }
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+@layer components {
+  /* ── Page shell ── */
+  .page-bg {
+    background-color: var(--surface-base);
+  }
+  .card-bg {
+    background-color: var(--surface-card);
+  }
+  .section-bg {
+    background-color: var(--surface-subtle);
+  }
+
+  /* ── Typography ── */
+  .text-display {
+    font-family: var(--font-fraunces);
+    color: var(--content-primary);
+  }
+  .text-body {
+    font-family: var(--font-dm-sans);
+    color: var(--content-secondary);
+  }
+  .text-muted {
+    color: var(--content-muted);
+  }
+  .text-inverse {
+    color: var(--content-inverse);
+  }
+
+  /* ── Borders ── */
+  .border-default {
+    border: 1px solid var(--surface-border);
+  }
+  .divide-default {
+    border-color: var(--surface-border);
+  }
+
+  /* ── Status badges ── */
+  .badge-pending {
+    background: #fef3c7;
+    color: var(--status-pending);
+  }
+  .badge-approved {
+    background: #d1fae5;
+    color: var(--status-approved);
+  }
+  .badge-matched {
+    background: #dbeafe;
+    color: var(--status-matched);
+  }
+  .badge-collected {
+    background: #e8d5ce;
+    color: var(--status-collected);
+  }
+  .badge-delivered {
+    background: #ede9fe;
+    color: var(--status-delivered);
+  }
+  .badge-rejected {
+    background: #fee2e2;
+    color: var(--status-rejected);
+  }
 }
