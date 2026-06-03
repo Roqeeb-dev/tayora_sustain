@@ -15,23 +15,21 @@ export default function Navbar() {
   const [menuOpen, setMenuOpen] = useState(false);
 
   return (
-    <header className="fixed top-0 z-50 bg-white border-b border-surface-border">
-      <nav className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
-        {/* Logo */}
+    <header className="sticky top-0 z-50 bg-white border-b border-surf-border">
+      <nav className="max-w-7xl mx-auto w-full px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
         <Link
           href="/"
-          className="font-display font-semibold text-lg text-brown"
+          className="font-display font-semibold text-lg text-primary"
         >
           Tayora Sustain
         </Link>
 
-        {/* Desktop links */}
         <ul className="hidden md:flex items-center gap-8">
           {NAV_LINKS.map((link) => (
             <li key={link.href}>
               <Link
                 href={link.href}
-                className="text-sm text-content-secondary hover:text-brown transition-colors"
+                className="text-sm text-ink-secondary hover:text-brown transition-colors"
               >
                 {link.label}
               </Link>
@@ -39,11 +37,10 @@ export default function Navbar() {
           ))}
         </ul>
 
-        {/* Desktop CTAs */}
         <div className="hidden md:flex items-center gap-3">
           <Link
             href="/auth/login"
-            className="text-sm text-content-secondary hover:text-brown transition-colors"
+            className="text-sm text-ink-secondary hover:text-brown transition-colors"
           >
             Log in
           </Link>
@@ -55,7 +52,6 @@ export default function Navbar() {
           </Link>
         </div>
 
-        {/* Mobile toggle */}
         <button
           onClick={() => setMenuOpen((prev) => !prev)}
           aria-label="Toggle menu"
@@ -65,20 +61,19 @@ export default function Navbar() {
         </button>
       </nav>
 
-      {/* Mobile menu */}
       {menuOpen && (
-        <div className="md:hidden bg-white border-t border-surface-border px-6 py-6 flex flex-col gap-6">
+        <div className="md:hidden bg-white border-t border-surf-border px-6 py-6 flex flex-col gap-6">
           {NAV_LINKS.map((link) => (
             <Link
               key={link.href}
               href={link.href}
               onClick={() => setMenuOpen(false)}
-              className="text-base text-content-secondary hover:text-brown transition-colors"
+              className="text-base text-ink-secondary hover:text-brown transition-colors"
             >
               {link.label}
             </Link>
           ))}
-          <div className="flex flex-col gap-3 pt-4 border-t border-surface-border">
+          <div className="flex flex-col gap-3 pt-4 border-t border-surf-border">
             <Link
               href="/auth/login"
               onClick={() => setMenuOpen(false)}

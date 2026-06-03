@@ -25,19 +25,14 @@ const config: Config = {
           hover: "#EDE4DE",
         },
 
-        brand: {
-          primary: "#240A00",
-          secondary: "#6B2E1A",
-          accent: "#A0522D",
-        },
-        surface: {
+        surf: {
           base: "#F5EFEA",
           card: "#FFFFFF",
           subtle: "#F9F6F3",
           hover: "#EDE4DE",
           border: "#D3BAB0",
         },
-        content: {
+        ink: {
           primary: "#240A00",
           secondary: "#333333",
           muted: "#B0948A",
