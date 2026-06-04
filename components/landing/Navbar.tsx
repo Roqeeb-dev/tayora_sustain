@@ -39,13 +39,13 @@ export default function Navbar() {
 
         <div className="hidden md:flex items-center gap-3">
           <Link
-            href="/auth/login"
+            href="/login"
             className="text-sm text-foreground-muted hover:text-primary transition-colors"
           >
             Log in
           </Link>
           <Link
-            href="/auth/register"
+            href="/register"
             className="text-sm bg-primary text-primary-foreground px-4 py-2 rounded-md hover:bg-primary-hover transition-colors"
           >
             Get Started
@@ -75,14 +75,14 @@ export default function Navbar() {
           ))}
           <div className="flex flex-col gap-3 pt-4 border-t border-border">
             <Link
-              href="/auth/login"
+              href="login"
               onClick={() => setMenuOpen(false)}
               className="text-center py-2.5 rounded-md border border-primary text-primary text-sm hover:bg-muted transition-colors"
             >
               Log in
             </Link>
             <Link
-              href="/auth/register"
+              href="register"
               onClick={() => setMenuOpen(false)}
               className="text-center py-2.5 rounded-md bg-primary text-primary-foreground text-sm hover:bg-primary-hover transition-colors"
             >

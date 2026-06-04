@@ -1,7 +1,5 @@
 import type { Metadata } from "next";
 import { Fraunces, DM_Sans } from "next/font/google";
-import Navbar from "@/components/landing/Navbar";
-import Footer from "@/components/landing/Footer";
 import "./globals.css";
 
 const fraunces = Fraunces({
@@ -75,9 +73,7 @@ export default function RootLayout({
       className={`${fraunces.variable} ${dmSans.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col bg-beige font-sans">
-        <Navbar />
         <main className="flex-1">{children}</main>
-        <Footer />
       </body>
     </html>
   );
