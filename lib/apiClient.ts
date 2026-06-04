@@ -1,3 +1,14 @@
+export class ApiError extends Error {
+  constructor(
+    public status: number,
+    public message: string,
+    public data?: unknown,
+  ) {
+    super(message);
+    this.name = "ApiError";
+  }
+}
+
 const baseUrl = process.env.NEXT_PUBLIC_API_URL ?? "";
 
 export const apiClient = {
@@ -10,15 +21,31 @@ export const apiClient = {
       },
       body: options.body,
       credentials: "include",
-      redirect: options.redirect,
       signal: options.signal,
     });
 
-    return res.json();
+    if (res.status === 204) return undefined as T;
+
+    let data: unknown;
+    try {
+      data = await res.json();
+    } catch {
+      throw new ApiError(res.status, "Invalid JSON response from server");
+    }
+
+    if (!res.ok) {
+      const message =
+        (data as { detail?: string; message?: string })?.detail ??
+        (data as { detail?: string; message?: string })?.message ??
+        `Request failed with status ${res.status}`;
+      throw new ApiError(res.status, message, data);
+    }
+
+    return data as T;
   },
 
-  get<T>(url: string) {
-    return this.request<T>(url);
+  get<T>(url: string, options?: RequestInit) {
+    return this.request<T>(url, { ...options, method: "GET" });
   },
 
   post<T, B = unknown>(url: string, body?: B) {
@@ -28,14 +55,21 @@ export const apiClient = {
     });
   },
 
-  delete<T>(url: string) {
-    return this.request<T>(url, { method: "DELETE" });
-  },
-
-  patch<T, B>(url: string, body: B) {
+  patch<T, B = unknown>(url: string, body: B) {
     return this.request<T>(url, {
       method: "PATCH",
       body: JSON.stringify(body),
     });
+  },
+
+  put<T, B = unknown>(url: string, body: B) {
+    return this.request<T>(url, {
+      method: "PUT",
+      body: JSON.stringify(body),
+    });
+  },
+
+  delete<T>(url: string) {
+    return this.request<T>(url, { method: "DELETE" });
   },
 };

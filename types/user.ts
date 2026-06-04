@@ -1,13 +1,12 @@
-export type Role = "donor" | "requester" | "admin";
+export type Role = "supplier" | "requester" | "admin";
 
 export interface ServerUser {
   id: string;
   full_name: string;
   email: string;
   role: Role;
-
-  createdAt?: string;
-  updatedAt?: string;
+  created_at?: string;
+  updated_at?: string;
 }
 
 export interface User {
@@ -15,7 +14,6 @@ export interface User {
   name: string;
   email: string;
   role: Role;
-
   createdAt?: Date;
   updatedAt?: Date;
 }
@@ -26,7 +24,7 @@ export function normalizeUser(data: ServerUser): User {
     name: data.full_name,
     email: data.email,
     role: data.role,
-    createdAt: data.createdAt ? new Date(data.createdAt) : new Date(),
-    updatedAt: data.updatedAt ? new Date(data.updatedAt) : new Date(),
+    createdAt: data.created_at ? new Date(data.created_at) : undefined,
+    updatedAt: data.updated_at ? new Date(data.updated_at) : undefined,
   };
 }
