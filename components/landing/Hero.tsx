@@ -53,11 +53,6 @@ const CONTENT = {
       },
       secondary: { label: "See how it works", href: "/#how-it-works" },
     },
-    pills: [
-      "Cotton, denim, ankara & more",
-      "Filter by location",
-      "Request in minutes",
-    ],
   },
 };
 
@@ -77,7 +72,7 @@ export default function Hero() {
       />
 
       <div className="relative flex-1 flex items-center">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full py-24 lg:py-32">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full py-8">
           <div className="max-w-3xl">
             {/* Role toggle */}
             <div className="inline-flex items-center bg-card border border-border rounded-xl p-1 mb-10">
@@ -123,10 +118,7 @@ export default function Hero() {
             <div className="flex flex-col sm:flex-row gap-3 mb-10">
               <Link
                 href={content.cta.primary.href}
-                className="group inline-flex items-center justify-center gap-2 bg-primary
-                           text-primary-foreground px-6 py-3.5 rounded-xl font-medium
-                           hover:bg-primary-hover transition-all duration-200
-                           hover:-translate-y-0.5 hover:shadow-lg"
+                className="group inline-flex items-center justify-center gap-2 bg-primary text-primary-foreground px-6 py-3.5 rounded-xl font-medium hover:bg-primary-hover transition-all duration-200 hover:-translate-y-0.5 hover:shadow-lg"
               >
                 {content.cta.primary.label}
                 <ArrowRight
@@ -142,19 +134,6 @@ export default function Hero() {
               >
                 {content.cta.secondary.label}
               </Link>
-            </div>
-
-            {/* Feature pills */}
-            <div className="flex flex-wrap gap-2">
-              {content.pills.map((pill) => (
-                <span
-                  key={pill}
-                  className="text-xs text-foreground-muted bg-card border border-border
-                             px-3 py-1.5 rounded-full"
-                >
-                  {pill}
-                </span>
-              ))}
             </div>
           </div>
         </div>
