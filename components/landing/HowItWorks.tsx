@@ -1,3 +1,7 @@
+"use client";
+
+import { useEffect, useRef, useState } from "react";
+
 const STEPS = [
   {
     number: "01",
@@ -30,8 +34,48 @@ const STEPS = [
 ];
 
 export default function HowItWorks() {
+  const sectionRef = useRef<HTMLDivElement>(null);
+  const [progress, setProgress] = useState(0);
+  const [activeStep, setActiveStep] = useState(-1);
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          // Animate progress line from 0 to 100 over 2s
+          let start: number | null = null;
+          const duration = 8000;
+
+          const tick = (timestamp: number) => {
+            if (!start) start = timestamp;
+            const elapsed = timestamp - start;
+            const pct = Math.min((elapsed / duration) * 100, 100);
+            setProgress(pct);
+
+            // Activate step bubbles progressively
+            setActiveStep(Math.floor((pct / 100) * STEPS.length) - 1);
+
+            if (pct < 100) requestAnimationFrame(tick);
+            else setActiveStep(STEPS.length - 1);
+          };
+
+          requestAnimationFrame(tick);
+          observer.disconnect();
+        }
+      },
+      { threshold: 0.3 },
+    );
+
+    if (sectionRef.current) observer.observe(sectionRef.current);
+    return () => observer.disconnect();
+  }, []);
+
   return (
-    <section id="how-it-works" className="bg-background py-24 lg:py-32">
+    <section
+      id="how-it-works"
+      ref={sectionRef}
+      className="bg-background py-24 lg:py-32"
+    >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-end mb-20">
@@ -50,37 +94,81 @@ export default function HowItWorks() {
 
         {/* Steps */}
         <div className="relative">
-          {/* Connecting line — desktop */}
+          {/* Static base line */}
           <div className="hidden lg:block absolute top-8 left-0 right-0 h-px bg-border" />
 
+          {/* Animated fill line */}
+          <div
+            className="hidden lg:block absolute top-8 left-0 h-px bg-primary origin-left transition-none"
+            style={{ width: `${progress}%` }}
+          />
+
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
-            {STEPS.map((step, i) => (
-              <div key={step.number} className="relative flex flex-col gap-5">
-                {/* Number bubble */}
-                <div className="relative z-10 w-16 h-16 rounded-2xl bg-card border border-border flex items-center justify-center">
-                  <span className="font-display text-xl text-accent">
-                    {step.number}
-                  </span>
+            {STEPS.map((step, i) => {
+              const isActive = i <= activeStep;
 
-                  {/* Connector dot */}
-                  {i < STEPS.length - 1 && (
-                    <span className="hidden lg:block absolute -right-4 top-1/2 -translate-y-1/2 w-2 h-2 rounded-full bg-border" />
-                  )}
-                </div>
+              return (
+                <div key={step.number} className="relative flex flex-col gap-5">
+                  {/* Number bubble */}
+                  <div
+                    className="relative z-10 w-16 h-16 rounded-2xl border flex items-center justify-center transition-all duration-500"
+                    style={{
+                      backgroundColor: isActive
+                        ? "var(--color-primary)"
+                        : "var(--color-card)",
+                      borderColor: isActive
+                        ? "var(--color-primary)"
+                        : "var(--color-border)",
+                      transitionDelay: `${i * 120}ms`,
+                    }}
+                  >
+                    <span
+                      className="font-display text-xl transition-colors duration-500"
+                      style={{
+                        color: isActive
+                          ? "var(--color-primary-foreground)"
+                          : "var(--color-accent)",
+                        transitionDelay: `${i * 120}ms`,
+                      }}
+                    >
+                      {step.number}
+                    </span>
 
-                <div className="flex flex-col gap-2">
-                  <span className="text-xs font-medium tracking-widest uppercase text-foreground-muted">
-                    {step.role}
-                  </span>
-                  <h3 className="font-display text-xl text-foreground">
-                    {step.action}
-                  </h3>
-                  <p className="text-foreground-muted text-sm leading-relaxed">
-                    {step.description}
-                  </p>
+                    {/* Connector dot */}
+                    {i < STEPS.length - 1 && (
+                      <span
+                        className="hidden lg:block absolute -right-4 top-1/2 -translate-y-1/2 w-2 h-2 rounded-full transition-colors duration-500"
+                        style={{
+                          backgroundColor: isActive
+                            ? "var(--color-primary)"
+                            : "var(--color-border)",
+                          transitionDelay: `${i * 120}ms`,
+                        }}
+                      />
+                    )}
+                  </div>
+
+                  {/* Text */}
+                  <div
+                    className="flex flex-col gap-2 transition-all duration-500"
+                    style={{
+                      opacity: isActive ? 1 : 0.4,
+                      transitionDelay: `${i * 120}ms`,
+                    }}
+                  >
+                    <span className="text-xs font-medium tracking-widest uppercase text-foreground-muted">
+                      {step.role}
+                    </span>
+                    <h3 className="font-display text-xl text-foreground">
+                      {step.action}
+                    </h3>
+                    <p className="text-foreground-muted text-sm leading-relaxed">
+                      {step.description}
+                    </p>
+                  </div>
                 </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
         </div>
       </div>
