@@ -77,7 +77,7 @@ export default function RootLayout({
       <body className="min-h-full flex flex-col bg-beige font-sans">
         <Navbar />
         <main className="flex-1">{children}</main>
-        {/* <Footer /> */}
+        <Footer />
       </body>
     </html>
   );

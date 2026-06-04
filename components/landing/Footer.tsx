@@ -17,11 +17,7 @@ const SOCIAL_LINKS = [
     href: "https://instagram.com/tayorasustain",
     icon: InstagramIcon,
   },
-  {
-    label: "Twitter",
-    href: "https://twitter.com/tayorasustain",
-    icon: XIcon,
-  },
+  { label: "Twitter", href: "https://twitter.com/tayorasustain", icon: XIcon },
   {
     label: "LinkedIn",
     href: "https://linkedin.com/company/tayorasustain",
@@ -32,7 +28,7 @@ const SOCIAL_LINKS = [
 
 export default function Footer() {
   return (
-    <footer className="bg-brown text-white">
+    <footer className="bg-primary text-primary-foreground">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         {/* Top row */}
         <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-8">
@@ -40,11 +36,11 @@ export default function Footer() {
           <div className="flex flex-col gap-3 max-w-xs">
             <Link
               href="/"
-              className="font-display font-semibold text-lg text-white"
+              className="font-display font-semibold text-lg text-primary-foreground"
             >
               Tayora Sustain
             </Link>
-            <p className="text-plaster text-sm leading-relaxed">
+            <p className="text-secondary text-sm leading-relaxed">
               Closing the loop on fashion waste — connecting surplus with
               purpose across the supply chain.
             </p>
@@ -56,7 +52,7 @@ export default function Footer() {
               <li key={link.label}>
                 <Link
                   href={link.href}
-                  className="text-plaster text-sm hover:text-white transition-colors"
+                  className="text-secondary text-sm hover:text-primary-foreground transition-colors"
                 >
                   {link.label}
                 </Link>
@@ -66,8 +62,8 @@ export default function Footer() {
         </div>
 
         {/* Bottom row */}
-        <div className="mt-10 pt-6 border-t border-brown-mid flex flex-col sm:flex-row items-center justify-between gap-4">
-          <p className="text-plaster-muted text-xs">
+        <div className="mt-10 pt-6 border-t border-accent flex flex-col sm:flex-row items-center justify-between gap-4">
+          <p className="text-muted-foreground text-xs">
             © {new Date().getFullYear()} Tayora Sustain. All rights reserved.
           </p>
           <div className="flex items-center gap-4">
@@ -78,7 +74,7 @@ export default function Footer() {
                 target="_blank"
                 rel="noopener noreferrer"
                 aria-label={label}
-                className="text-plaster hover:text-white transition-colors"
+                className="text-secondary hover:text-primary-foreground transition-colors"
               >
                 <Icon size={16} />
               </a>
