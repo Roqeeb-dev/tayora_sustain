@@ -1,5 +1,3 @@
-// src/app/auth/register/RegisterClient.tsx
-
 "use client";
 
 import { useState } from "react";
@@ -43,18 +41,6 @@ const ROLES: {
   },
 ];
 
-function validate(form: FormState): FormErrors {
-  const errors: FormErrors = {};
-  if (!form.fullName.trim()) errors.fullName = "Full name is required.";
-  if (!form.email.trim()) errors.email = "Email is required.";
-  else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email))
-    errors.email = "Enter a valid email address.";
-  if (!form.password) errors.password = "Password is required.";
-  else if (form.password.length < 8)
-    errors.password = "Password must be at least 8 characters.";
-  return errors;
-}
-
 export default function RegisterClient() {
   const router = useRouter();
 
@@ -79,8 +65,6 @@ export default function RegisterClient() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setServerError("");
-    const errs = validate(form);
-    if (Object.keys(errs).length) return setErrors(errs);
 
     setLoading(true);
     try {
@@ -180,7 +164,7 @@ export default function RegisterClient() {
       </div>
 
       {/* Form */}
-      <form onSubmit={handleSubmit} className="flex flex-col gap-4" noValidate>
+      <form onSubmit={handleSubmit} className="flex flex-col gap-4">
         <Input
           label="Full name"
           type="text"
@@ -189,6 +173,7 @@ export default function RegisterClient() {
           value={form.fullName}
           onChange={set("fullName")}
           error={errors.fullName}
+          required
         />
 
         <Input
@@ -199,6 +184,7 @@ export default function RegisterClient() {
           value={form.email}
           onChange={set("email")}
           error={errors.email}
+          required
         />
 
         <Input
@@ -210,6 +196,7 @@ export default function RegisterClient() {
           onChange={set("password")}
           error={errors.password}
           hint="Use a mix of letters, numbers and symbols."
+          required
         />
 
         {serverError && (

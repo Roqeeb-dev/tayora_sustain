@@ -28,8 +28,7 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
             ref={ref}
             type={resolvedType}
             className={`w-full h-11 px-3.5 rounded-xl border bg-input text-foreground
-                        text-sm placeholder:text-foreground-muted/60
-                        outline-none transition-all duration-200
+                        text-sm placeholder:text-foreground-muted/60 outline-none transition-all duration-200
                         focus:ring-2 focus:ring-primary/20 focus:border-input-focus
                         disabled:opacity-50 disabled:cursor-not-allowed
                         ${error ? "border-destructive focus:ring-destructive/20 focus:border-destructive" : "border-border"}
