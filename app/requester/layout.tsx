@@ -1,13 +1,13 @@
 import DashboardShell from "@/components/dashboard/DashboardShell";
-import { LayoutDashboard, Search, ClipboardList, Bookmark } from "lucide-react";
 import { NavItem } from "@/components/dashboard/types";
 import Link from "next/link";
+import { Search } from "lucide-react";
 
 const NAV: NavItem[] = [
-  { label: "Dashboard", href: "/requester/dashboard", icon: LayoutDashboard },
-  { label: "Browse", href: "/requester/browse", icon: Search },
-  { label: "My Requests", href: "/requester/requests", icon: ClipboardList },
-  { label: "Saved", href: "/requester/saved", icon: Bookmark },
+  { label: "Dashboard", href: "/requester/dashboard", icon: "LayoutDashboard" },
+  { label: "Browse", href: "/requester/browse", icon: "Search" },
+  { label: "My Requests", href: "/requester/requests", icon: "ClipboardList" },
+  { label: "Saved", href: "/requester/saved", icon: "Bookmark" },
 ];
 
 export default function RequesterLayout({
@@ -22,9 +22,10 @@ export default function RequesterLayout({
       topbarAction={
         <Link
           href="/requester/browse"
-          className="text-sm bg-primary text-primary-foreground px-4 py-2
-                     rounded-xl hover:bg-primary-hover transition-colors font-medium"
+          className="inline-flex items-center gap-2 text-sm bg-primary text-primary-foreground
+                     px-4 py-2 rounded-xl hover:bg-primary-hover transition-colors font-medium"
         >
+          <Search size={14} />
           Browse Materials
         </Link>
       }

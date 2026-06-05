@@ -1,10 +1,8 @@
-import { LucideIcon } from "lucide-react";
+export type DashboardVariant = "user" | "admin";
 
 export interface NavItem {
   label: string;
   href: string;
-  icon: LucideIcon;
+  icon: string;
   badge?: number;
 }
-
-export type DashboardVariant = "user" | "admin";

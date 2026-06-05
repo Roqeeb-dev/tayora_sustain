@@ -2,7 +2,7 @@
 
 import { Menu, Bell } from "lucide-react";
 import { DashboardVariant } from "./types";
-import UserMenu from "../dashboard/UserMenu";
+import UserMenu from "./UserMenu";
 
 interface TopbarProps {
   pageTitle?: string;
@@ -21,8 +21,7 @@ export default function Topbar({
 
   return (
     <header
-      className={`h-16 shrink-0 flex items-center gap-4 px-4 sm:px-6
-                  border-b bg-background
+      className={`h-16 shrink-0 flex items-center gap-4 px-4 sm:px-6 border-b bg-background
                   ${isAdmin ? "border-border" : "border-border"}`}
     >
       {/* Mobile menu button */}
