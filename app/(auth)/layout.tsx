@@ -18,7 +18,7 @@ export default function AuthLayout({
           </Link>
         </div>
 
-        <div className="flex-1 flex items-center justify-center px-6 py-12 overflow-y-auto">
+        <div className="flex-1 flex items-center justify-center px-6 overflow-y-auto">
           <div className="w-full max-w-md">{children}</div>
         </div>
       </div>

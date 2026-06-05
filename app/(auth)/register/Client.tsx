@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { ArrowRight, Recycle, ShoppingBag, Check } from "lucide-react";
 import Input from "@/components/ui/Input";
+import { register } from "@/services/auth.service";
 
 type Role = "supplier" | "requester";
 
@@ -29,13 +30,13 @@ const ROLES: {
 }[] = [
   {
     value: "supplier",
-    icon: <Recycle size={20} />,
+    icon: <Recycle size={18} />,
     label: "Supplier",
     description: "I have textile waste to donate",
   },
   {
     value: "requester",
-    icon: <ShoppingBag size={20} />,
+    icon: <ShoppingBag size={18} />,
     label: "Requester",
     description: "I need fabric materials",
   },
@@ -50,7 +51,6 @@ export default function RegisterClient() {
     password: "",
     role: "supplier",
   });
-
   const [errors, setErrors] = useState<FormErrors>({});
   const [loading, setLoading] = useState(false);
   const [serverError, setServerError] = useState("");
@@ -68,32 +68,37 @@ export default function RegisterClient() {
 
     setLoading(true);
     try {
-      // Replace with your register service call
-      // await authService.register(form);
-      await new Promise((r) => setTimeout(r, 1200)); // placeholder
+      await register({
+        full_name: form.fullName,
+        email: form.email,
+        password: form.password,
+        role: form.role,
+      });
       router.push(
         form.role === "supplier"
           ? "/supplier/dashboard"
           : "/requester/dashboard",
       );
-    } catch {
-      setServerError("Something went wrong. Please try again.");
+    } catch (err) {
+      setServerError(
+        err instanceof Error ? err.message : "Something went wrong.",
+      );
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <div className="flex flex-col gap-8">
+    <div className="flex flex-col justify-between h-full gap-6">
       {/* Heading */}
-      <div className="flex flex-col gap-1.5">
-        <h1 className="font-display text-3xl text-foreground">
+      <div className="flex flex-col gap-1">
+        <h1 className="font-display text-2xl text-foreground">
           Create your account.
         </h1>
         <p className="text-foreground-muted text-sm">
           Already have one?{" "}
           <Link
-            href="/auth/login"
+            href="/login"
             className="text-accent font-medium hover:underline"
           >
             Log in
@@ -102,9 +107,9 @@ export default function RegisterClient() {
       </div>
 
       {/* Role selector */}
-      <div className="flex flex-col gap-3">
+      <div className="flex flex-col gap-2">
         <span className="text-sm font-medium text-foreground">I am a —</span>
-        <div className="grid grid-cols-2 gap-3">
+        <div className="grid grid-cols-2 gap-2.5">
           {ROLES.map(({ value, icon, label, description }) => {
             const active = form.role === value;
             return (
@@ -112,27 +117,26 @@ export default function RegisterClient() {
                 key={value}
                 type="button"
                 onClick={() => setForm((prev) => ({ ...prev, role: value }))}
-                className={`relative flex flex-col gap-2.5 p-4 rounded-2xl border-2
+                className={`relative flex flex-col gap-2 p-3.5 rounded-xl border-2
                             text-left transition-all duration-200 group
                             ${
                               active
                                 ? "border-primary bg-primary text-primary-foreground"
-                                : "border-border bg-card text-foreground hover:border-primary/40 hover:bg-background-subtle"
+                                : "border-border bg-card hover:border-primary/40 hover:bg-background-subtle"
                             }`}
               >
-                {/* Check mark */}
                 <div
-                  className={`absolute top-3 right-3 w-5 h-5 rounded-full border-2 flex items-center justify-center transition-all duration-200
+                  className={`absolute top-2.5 right-2.5 w-4 h-4 rounded-full border-2
+                              flex items-center justify-center transition-all duration-200
                               ${active ? "border-primary-foreground bg-primary-foreground/20" : "border-border"}`}
                 >
                   {active && (
-                    <Check size={11} className="text-primary-foreground" />
+                    <Check size={9} className="text-primary-foreground" />
                   )}
                 </div>
 
-                {/* Icon */}
                 <div
-                  className={`w-9 h-9 rounded-xl flex items-center justify-center transition-colors duration-200
+                  className={`w-8 h-8 rounded-lg flex items-center justify-center transition-colors
                               ${active ? "bg-primary-foreground/15" : "bg-muted group-hover:bg-background"}`}
                 >
                   <span
@@ -144,11 +148,10 @@ export default function RegisterClient() {
                   </span>
                 </div>
 
-                {/* Text */}
-                <div className="flex flex-col gap-0.5 pr-4">
+                <div className="flex flex-col gap-0.5 pr-3">
                   <span className="text-sm font-semibold">{label}</span>
                   <span
-                    className={`text-xs leading-snug transition-colors ${
+                    className={`text-xs leading-snug ${
                       active
                         ? "text-primary-foreground/70"
                         : "text-foreground-muted"
@@ -163,8 +166,8 @@ export default function RegisterClient() {
         </div>
       </div>
 
-      {/* Form */}
-      <form onSubmit={handleSubmit} className="flex flex-col gap-4">
+      {/* Form fields */}
+      <form onSubmit={handleSubmit} className="flex flex-col gap-3">
         <Input
           label="Full name"
           type="text"
@@ -175,7 +178,6 @@ export default function RegisterClient() {
           error={errors.fullName}
           required
         />
-
         <Input
           label="Email address"
           type="email"
@@ -186,7 +188,6 @@ export default function RegisterClient() {
           error={errors.email}
           required
         />
-
         <Input
           label="Password"
           type="password"
@@ -197,10 +198,11 @@ export default function RegisterClient() {
           error={errors.password}
           hint="Use a mix of letters, numbers and symbols."
           required
+          minLength={8}
         />
 
         {serverError && (
-          <p className="text-sm text-destructive bg-destructive/10 border border-destructive/20 px-4 py-3 rounded-xl">
+          <p className="text-sm text-destructive bg-destructive/10 border border-destructive/20 px-3 py-2.5 rounded-xl">
             {serverError}
           </p>
         )}
@@ -208,11 +210,7 @@ export default function RegisterClient() {
         <button
           type="submit"
           disabled={loading}
-          className="group mt-2 h-11 w-full flex items-center justify-center gap-2
-                     bg-primary text-primary-foreground rounded-xl font-medium text-sm
-                     hover:bg-primary-hover transition-all duration-200
-                     hover:-translate-y-0.5 hover:shadow-lg
-                     disabled:opacity-60 disabled:cursor-not-allowed disabled:translate-y-0 disabled:shadow-none"
+          className="group h-11 w-full flex items-center justify-center gap-2 mt-1 bg-primary text-primary-foreground rounded-xl font-medium text-sm hover:bg-primary-hover transition-all duration-200 hover:-translate-y-0.5 hover:shadow-lg disabled:opacity-60 disabled:cursor-not-allowed disabled:translate-y-0 disabled:shadow-none"
         >
           {loading ? (
             <span className="w-4 h-4 border-2 border-primary-foreground/30 border-t-primary-foreground rounded-full animate-spin" />
@@ -228,9 +226,9 @@ export default function RegisterClient() {
         </button>
 
         <p className="text-xs text-foreground-muted text-center leading-relaxed">
-          By creating an account you agree to our{" "}
+          By continuing you agree to our{" "}
           <Link href="/terms" className="underline hover:text-foreground">
-            Terms of Use
+            Terms
           </Link>{" "}
           and{" "}
           <Link href="/privacy" className="underline hover:text-foreground">
