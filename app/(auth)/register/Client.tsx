@@ -89,10 +89,10 @@ export default function RegisterClient() {
   };
 
   return (
-    <div className="flex flex-col justify-between h-full gap-6">
+    <div className="flex flex-col justify-between min-h-screen h-screen gap-4 p-4 overflow-hidden">
       {/* Heading */}
       <div className="flex flex-col gap-1">
-        <h1 className="font-display text-2xl text-foreground">
+        <h1 className="font-display text-xl text-foreground">
           Create your account.
         </h1>
         <p className="text-foreground-muted text-sm">
@@ -109,7 +109,7 @@ export default function RegisterClient() {
       {/* Role selector */}
       <div className="flex flex-col gap-2">
         <span className="text-sm font-medium text-foreground">I am a —</span>
-        <div className="grid grid-cols-2 gap-2.5">
+        <div className="grid grid-cols-2 gap-2">
           {ROLES.map(({ value, icon, label, description }) => {
             const active = form.role === value;
             return (
@@ -117,8 +117,7 @@ export default function RegisterClient() {
                 key={value}
                 type="button"
                 onClick={() => setForm((prev) => ({ ...prev, role: value }))}
-                className={`relative flex flex-col gap-2 p-3.5 rounded-xl border-2
-                            text-left transition-all duration-200 group
+                className={`relative flex flex-col gap-2 p-3 rounded-xl border-2 text-left transition-all duration-200 group
                             ${
                               active
                                 ? "border-primary bg-primary text-primary-foreground"
@@ -126,8 +125,7 @@ export default function RegisterClient() {
                             }`}
               >
                 <div
-                  className={`absolute top-2.5 right-2.5 w-4 h-4 rounded-full border-2
-                              flex items-center justify-center transition-all duration-200
+                  className={`absolute top-2.5 right-2.5 w-4 h-4 rounded-full border-2 flex items-center justify-center transition-all duration-200
                               ${active ? "border-primary-foreground bg-primary-foreground/20" : "border-border"}`}
                 >
                   {active && (
@@ -167,7 +165,7 @@ export default function RegisterClient() {
       </div>
 
       {/* Form fields */}
-      <form onSubmit={handleSubmit} className="flex flex-col gap-3">
+      <form onSubmit={handleSubmit} className="flex flex-col gap-2">
         <Input
           label="Full name"
           type="text"
@@ -210,7 +208,7 @@ export default function RegisterClient() {
         <button
           type="submit"
           disabled={loading}
-          className="group h-11 w-full flex items-center justify-center gap-2 mt-1 bg-primary text-primary-foreground rounded-xl font-medium text-sm hover:bg-primary-hover transition-all duration-200 hover:-translate-y-0.5 hover:shadow-lg disabled:opacity-60 disabled:cursor-not-allowed disabled:translate-y-0 disabled:shadow-none"
+          className="group h-10 w-full flex items-center justify-center gap-2 mt-0.5 bg-primary text-primary-foreground rounded-xl font-medium text-sm hover:bg-primary-hover transition-all duration-200 hover:-translate-y-0.5 hover:shadow-lg disabled:opacity-60 disabled:cursor-not-allowed disabled:translate-y-0 disabled:shadow-none"
         >
           {loading ? (
             <span className="w-4 h-4 border-2 border-primary-foreground/30 border-t-primary-foreground rounded-full animate-spin" />
