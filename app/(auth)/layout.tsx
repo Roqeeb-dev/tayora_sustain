@@ -1,4 +1,11 @@
+import type { Metadata } from "next";
 import AuthBrandPanel from "@/components/auth/AuthBrandPanel";
+
+export const metadata: Metadata = {
+  title: "Authentication | Tayora Sustain",
+  description:
+    "Sign in or create an account to manage listings and requests on Tayora Sustain.",
+};
 
 export default function AuthLayout({
   children,

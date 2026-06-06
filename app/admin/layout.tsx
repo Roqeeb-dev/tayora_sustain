@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import DashboardShell from "@/components/dashboard/DashboardShell";
 import { NavItem } from "@/components/dashboard/types";
 
@@ -22,3 +23,9 @@ export default function AdminLayout({
     </DashboardShell>
   );
 }
+
+export const metadata: Metadata = {
+  title: "Admin | Tayora Sustain",
+  description:
+    "Admin dashboard — manage listings, requests, logistics and impact metrics.",
+};

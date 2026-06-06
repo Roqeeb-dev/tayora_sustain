@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 import {
   Package,
@@ -200,3 +201,9 @@ export default function SupplierDashboardPage() {
     </div>
   );
 }
+
+export const metadata: Metadata = {
+  title: "Dashboard | Supplier — Tayora Sustain",
+  description:
+    "Your supplier dashboard — overview of listings, pickups, and activity.",
+};

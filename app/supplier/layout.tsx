@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import DashboardShell from "@/components/dashboard/DashboardShell";
 import { NavItem } from "@/components/dashboard/types";
 import Link from "next/link";
@@ -34,3 +35,9 @@ export default function SupplierLayout({
     </DashboardShell>
   );
 }
+
+export const metadata: Metadata = {
+  title: "Supplier | Tayora Sustain",
+  description:
+    "Supplier dashboard — manage listings, uploads, and pickups on Tayora Sustain.",
+};
