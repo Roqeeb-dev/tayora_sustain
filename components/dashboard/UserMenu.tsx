@@ -4,6 +4,7 @@ import { useState, useRef, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { LogOut, User, ChevronDown } from "lucide-react";
 import { DashboardVariant } from "./types";
+import { useAuth } from "@/hooks/useAuth";
 
 interface UserMenuProps {
   variant: DashboardVariant;
@@ -14,8 +15,8 @@ export default function UserMenu({ variant }: UserMenuProps) {
   const ref = useRef<HTMLDivElement>(null);
   const router = useRouter();
   const isAdmin = variant === "admin";
+  const { logout } = useAuth();
 
-  // Close on outside click
   useEffect(() => {
     function handleClick(e: MouseEvent) {
       if (ref.current && !ref.current.contains(e.target as Node)) {
@@ -26,10 +27,11 @@ export default function UserMenu({ variant }: UserMenuProps) {
     return () => document.removeEventListener("mousedown", handleClick);
   }, []);
 
-  const handleLogout = async () => {
-    // await logout() from auth service
-    router.push("/auth/login");
-  };
+  async function handleLogout() {
+    try {
+      await logout();
+    } catch (error) {}
+  }
 
   return (
     <div ref={ref} className="relative">

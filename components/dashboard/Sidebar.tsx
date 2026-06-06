@@ -75,7 +75,7 @@ function SidebarContent({
       <div
         className={`h-16 flex items-center px-5 border-b shrink-0 border-primary-hover`}
       >
-        <Logo size="md" />
+        <Logo size="md" invert />
       </div>
 
       <nav className="flex-1 px-3 py-4 flex flex-col gap-1 overflow-y-auto">

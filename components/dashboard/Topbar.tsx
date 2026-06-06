@@ -56,7 +56,6 @@ export default function Topbar({
 }
 
 function NotificationBell() {
-  // Wire to real notifications later
   const count = 3;
 
   return (
