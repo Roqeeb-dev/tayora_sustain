@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { Mail } from "lucide-react";
 import { InstagramIcon, XIcon, LinkedInIcon } from "@/public/icons/SocialIcons";
+import Logo from "../ui/Logo";
 
 const FOOTER_LINKS = [
   { label: "How It Works", href: "/#how-it-works" },
@@ -34,12 +35,7 @@ export default function Footer() {
         <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-8">
           {/* Brand */}
           <div className="flex flex-col gap-3 max-w-xs">
-            <Link
-              href="/"
-              className="font-display font-semibold text-lg text-primary-foreground"
-            >
-              Tayora Sustain
-            </Link>
+            <Logo size="md" invert />
             <p className="text-secondary text-sm leading-relaxed">
               Closing the loop on fashion waste — connecting surplus with
               purpose across the supply chain.

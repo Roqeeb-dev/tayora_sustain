@@ -5,6 +5,7 @@ import { usePathname } from "next/navigation";
 import { X } from "lucide-react";
 import { NavItem, DashboardVariant } from "./types";
 import { ICON_MAP } from "./navConfig";
+import Logo from "../ui/Logo";
 
 interface SidebarProps {
   navItems: NavItem[];
@@ -74,12 +75,7 @@ function SidebarContent({
       <div
         className={`h-16 flex items-center px-5 border-b shrink-0 border-primary-hover`}
       >
-        <Link
-          href="/"
-          className={`font-display font-semibold text-lg text-primary-foreground`}
-        >
-          Tayora Sustain
-        </Link>
+        <Logo size="md" />
       </div>
 
       <nav className="flex-1 px-3 py-4 flex flex-col gap-1 overflow-y-auto">

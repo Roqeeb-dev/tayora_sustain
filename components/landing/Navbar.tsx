@@ -3,6 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import { Menu, X } from "lucide-react";
+import Logo from "../ui/Logo";
 
 const NAV_LINKS = [
   { label: "How It Works", href: "/#how-it-works" },
@@ -17,12 +18,7 @@ export default function Navbar() {
   return (
     <header className="sticky top-0 z-50 bg-card border-b border-border">
       <nav className="max-w-7xl mx-auto w-full px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
-        <Link
-          href="/"
-          className="font-display font-semibold text-lg text-primary"
-        >
-          Tayora Sustain
-        </Link>
+        <Logo size="lg" />
 
         <ul className="hidden md:flex items-center gap-8">
           {NAV_LINKS.map((link) => (
