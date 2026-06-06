@@ -28,7 +28,7 @@ export default function LoginClient() {
         <p className="text-foreground-muted text-sm">
           Don&apos;t have an account?{" "}
           <Link
-            href="/auth/register"
+            href="/register"
             className="text-accent font-medium hover:underline"
           >
             Create one
