@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Fraunces, DM_Sans } from "next/font/google";
 import "./globals.css";
+import { QueryProvider } from "@/providers/QueryProvider";
 
 const fraunces = Fraunces({
   variable: "--font-fraunces",
@@ -73,7 +74,9 @@ export default function RootLayout({
       className={`${fraunces.variable} ${dmSans.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col bg-beige font-sans">
-        <main className="flex-1">{children}</main>
+        <main className="flex-1">
+          <QueryProvider>{children}</QueryProvider>
+        </main>
       </body>
     </html>
   );

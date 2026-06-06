@@ -113,3 +113,15 @@ export async function resetPassword(
     throw new Error("Password reset failed. Please try again.");
   }
 }
+
+export async function getMe(): Promise<User> {
+  try {
+    const res = await apiClient.get<ServerUser>("/auth/me");
+    return normalizeUser(res);
+  } catch (err) {
+    if (err instanceof ApiError && err.status === 401) {
+      return null as unknown as User;
+    }
+    throw err;
+  }
+}
