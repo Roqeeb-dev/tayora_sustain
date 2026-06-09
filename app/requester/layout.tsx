@@ -23,8 +23,7 @@ export default function RequesterLayout({
       topbarAction={
         <Link
           href="/requester/browse"
-          className="inline-flex items-center gap-2 text-sm bg-primary text-primary-foreground
-                     px-4 py-2 rounded-xl hover:bg-primary-hover transition-colors font-medium"
+          className="inline-flex items-center gap-2 text-sm bg-primary text-primary-foreground px-4 py-2 rounded-xl hover:bg-primary-hover transition-colors font-medium"
         >
           <Search size={14} />
           Browse Materials
