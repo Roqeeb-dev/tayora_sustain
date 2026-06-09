@@ -94,9 +94,7 @@ export default function SupplierDashboardPage() {
         action={
           <Link
             href="/supplier/upload"
-            className="inline-flex items-center gap-2 bg-primary text-primary-foreground
-                       px-4 py-2.5 rounded-xl text-sm font-medium hover:bg-primary-hover
-                       transition-colors"
+            className="inline-flex items-center gap-2 bg-primary text-primary-foreground px-4 py-2.5 rounded-xl text-sm font-medium hover:bg-primary-hover transition-colors"
           >
             <Upload size={15} />
             Upload Waste

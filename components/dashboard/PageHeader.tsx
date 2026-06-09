@@ -10,7 +10,7 @@ export default function PageHeader({
   action,
 }: PageHeaderProps) {
   return (
-    <div className="flex items-start justify-between gap-4 mb-8">
+    <div className="flex items-start justify-between gap-4 mb-5">
       <div className="flex flex-col gap-1">
         <h1 className="font-display text-2xl text-foreground">{title}</h1>
         {description && (

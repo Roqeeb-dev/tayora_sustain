@@ -44,6 +44,37 @@ export const apiClient = {
     return data as T;
   },
 
+  async requestForm<T>(
+    url: string,
+    method: string,
+    body: FormData,
+  ): Promise<T> {
+    const res = await fetch(baseUrl + url, {
+      method,
+      body,
+      credentials: "include",
+    });
+
+    if (res.status === 204) return undefined as T;
+
+    let data: unknown;
+    try {
+      data = await res.json();
+    } catch {
+      throw new ApiError(res.status, "Invalid JSON response from server");
+    }
+
+    if (!res.ok) {
+      const message =
+        (data as { detail?: string; message?: string })?.detail ??
+        (data as { detail?: string; message?: string })?.message ??
+        `Request failed with status ${res.status}`;
+      throw new ApiError(res.status, message, data);
+    }
+
+    return data as T;
+  },
+
   get<T>(url: string, options?: RequestInit) {
     return this.request<T>(url, { ...options, method: "GET" });
   },
@@ -55,11 +86,21 @@ export const apiClient = {
     });
   },
 
+  // POST with FormData (file upload)
+  postForm<T>(url: string, body: FormData) {
+    return this.requestForm<T>(url, "POST", body);
+  },
+
   patch<T, B = unknown>(url: string, body: B) {
     return this.request<T>(url, {
       method: "PATCH",
       body: JSON.stringify(body),
     });
+  },
+
+  // PATCH with FormData (file upload)
+  patchForm<T>(url: string, body: FormData) {
+    return this.requestForm<T>(url, "PATCH", body);
   },
 
   put<T, B = unknown>(url: string, body: B) {
