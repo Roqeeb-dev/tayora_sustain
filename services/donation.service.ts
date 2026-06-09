@@ -19,40 +19,48 @@ function toFormData(payload: Partial<CreateDonationPayload>): FormData {
   return fd;
 }
 
-export async function createDonation(payload: CreateDonationPayload) {
+export async function createDonation(
+  payload: CreateDonationPayload,
+): Promise<Donation> {
   try {
     const res = await apiClient.postForm<Donation>(
       "/donations",
       toFormData(payload),
     );
-
     return res;
-  } catch (err) {
+  } catch (err: any) {
     if (err instanceof ApiError) {
-      throw new Error("Upload failed. Please try again!");
+      if (err.status === 413) throw new Error("Uploaded file is too large.");
+      if (err.status === 422)
+        throw new Error("Please check the donation details and try again.");
+      if (err.status === 401) throw new Error("Unauthorized. Please sign in.");
+      throw new Error(err.message || "Upload failed. Please try again.");
     }
+    throw err;
   }
 }
 
-export async function getDonations() {
+export async function getDonations(): Promise<Donation[]> {
   try {
-    const res = await apiClient.get<Donation[]>("/donations");
-
-    return res;
-  } catch (err) {
+    return await apiClient.get<Donation[]>("/donations");
+  } catch (err: any) {
     if (err instanceof ApiError) {
-      throw new Error("Something went wrong. Please try again!");
+      throw new Error(err.message || "Could not fetch donations.");
     }
+    throw err;
   }
 }
 
-export async function getSingleDonation(donation_id: string) {
+export async function getSingleDonation(
+  donation_id: string,
+): Promise<Donation> {
   try {
-    const res = await apiClient.get<Donation>(`/donations/${donation_id}`);
-    return res;
-  } catch (err) {
+    return await apiClient.get<Donation>(`/donations/${donation_id}`);
+  } catch (err: any) {
     if (err instanceof ApiError) {
-      throw new Error("Failed to fetch. Please try again!");
+      if (err.status === 404) throw new Error("Donation not found.");
+      throw new Error(err.message || "Failed to fetch donation.");
     }
+    throw err;
   }
 }
