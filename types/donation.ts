@@ -1,3 +1,9 @@
+export type DonationStatus =
+  | "pending"
+  | "approved"
+  | "collected"
+  | "redistributed";
+
 export interface Donation {
   id: number;
   donor_id: number;
@@ -5,6 +11,6 @@ export interface Donation {
   quantity: string;
   description: string;
   image_url: string;
-  status: "pending" | "approved";
+  status: DonationStatus;
   location: string;
 }

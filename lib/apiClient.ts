@@ -35,8 +35,7 @@ export const apiClient = {
 
     if (!res.ok) {
       const message =
-        (data as { detail?: string; message?: string })?.detail ??
-        (data as { detail?: string; message?: string })?.message ??
+        (data as { message?: string })?.message ??
         `Request failed with status ${res.status}`;
       throw new ApiError(res.status, message, data);
     }
@@ -66,8 +65,7 @@ export const apiClient = {
 
     if (!res.ok) {
       const message =
-        (data as { detail?: string; message?: string })?.detail ??
-        (data as { detail?: string; message?: string })?.message ??
+        (data as { message?: string })?.message ??
         `Request failed with status ${res.status}`;
       throw new ApiError(res.status, message, data);
     }
