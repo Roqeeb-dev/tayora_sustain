@@ -4,7 +4,8 @@ type Status =
   | "matched"
   | "collected"
   | "delivered"
-  | "rejected";
+  | "rejected"
+  | "redistributed";
 
 const CONFIG: Record<Status, { label: string; classes: string }> = {
   pending: { label: "Pending", classes: "bg-warning/10 text-warning" },
@@ -16,13 +17,32 @@ const CONFIG: Record<Status, { label: string; classes: string }> = {
     label: "Rejected",
     classes: "bg-destructive/10 text-destructive",
   },
+  redistributed: {
+    label: "Redistributed",
+    classes: "bg-success/10 text-success",
+  },
 };
 
-export default function StatusBadge({ status }: { status: Status }) {
-  const { label, classes } = CONFIG[status];
+interface StatusBadgeProps {
+  status: string;
+}
+
+export default function StatusBadge({ status }: StatusBadgeProps) {
+  const config = CONFIG[status as Status];
+
+  if (!config) {
+    return (
+      <span className="text-xs font-medium px-2.5 py-1 rounded-full bg-muted text-foreground-muted capitalize">
+        {status}
+      </span>
+    );
+  }
+
   return (
-    <span className={`text-xs font-medium px-2.5 py-1 rounded-full ${classes}`}>
-      {label}
+    <span
+      className={`text-xs font-medium px-2.5 py-1 rounded-full ${config.classes}`}
+    >
+      {config.label}
     </span>
   );
 }

@@ -1,202 +1,267 @@
+// src/app/supplier/upload/page.tsx
 "use client";
 
 import { useState } from "react";
-import PageHeader from "@/components/dashboard/PageHeader";
+import { useRouter } from "next/navigation";
+import { ImagePlus, X, ArrowRight } from "lucide-react";
+import Image from "next/image";
 import Input from "@/components/ui/Input";
-import { apiClient } from "@/lib/apiClient";
-import Link from "next/link";
+import PageHeader from "@/components/dashboard/PageHeader";
+import { useCreateDonation } from "@/hooks/useSupplier";
 
-export default function Upload() {
-  const [title, setTitle] = useState("");
-  const [fabric, setFabric] = useState("");
-  const [quantity, setQuantity] = useState<number | "">("");
+const FABRIC_TYPES = [
+  "Cotton",
+  "Denim",
+  "Ankara",
+  "Linen",
+  "Silk",
+  "Polyester",
+  "Wool",
+  "Mixed",
+];
+
+export default function UploadPage() {
+  const router = useRouter();
+  const { mutateAsync, isPending, error } = useCreateDonation();
+
+  const [fabricType, setFabricType] = useState("");
+  const [quantity, setQuantity] = useState("");
   const [description, setDescription] = useState("");
   const [location, setLocation] = useState("");
-  const [images, setImages] = useState<FileList | null>(null);
-  const [loading, setLoading] = useState(false);
-  const [message, setMessage] = useState<string | null>(null);
+  const [imageFile, setImageFile] = useState<File | null>(null);
+  const [imagePreview, setImagePreview] = useState<string | null>(null);
+  const [imageError, setImageError] = useState("");
+  const [fabricError, setFabricError] = useState("");
 
-  async function handleSubmit(e: React.FormEvent) {
+  const handleImage = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    setImageFile(file);
+    setImagePreview(URL.createObjectURL(file));
+    setImageError("");
+  };
+
+  const clearImage = () => {
+    setImageFile(null);
+    setImagePreview(null);
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setMessage(null);
-    if (!title || !fabric || !quantity || !location) {
-      setMessage("Please fill all required fields.");
-      return;
-    }
 
-    setLoading(true);
-    try {
-      // If images were selected, submit as multipart/form-data
-      if (images && images.length > 0) {
-        const form = new FormData();
-        form.append("title", title);
-        form.append("fabric", fabric);
-        form.append("quantity", String(quantity));
-        form.append("description", description);
-        form.append("location", location);
-        Array.from(images).forEach((f) => form.append("images", f));
-
-        const res = await fetch("/supplier/listings", {
-          method: "POST",
-          body: form,
-          credentials: "include",
-        });
-        if (!res.ok) {
-          const data = await res.text();
-          throw new Error(data || `Request failed: ${res.status}`);
-        }
-      } else {
-        await apiClient.post("/supplier/listings", {
-          title,
-          fabric,
-          quantity,
-          description,
-          location,
-        });
-      }
-      setMessage("Listing submitted successfully.");
-      setTitle("");
-      setFabric("");
-      setQuantity("");
-      setDescription("");
-      setLocation("");
-      setImages(null);
-    } catch (err: any) {
-      setMessage(err?.message ?? "Submission failed. Please try again.");
-    } finally {
-      setLoading(false);
+    let valid = true;
+    if (!imageFile) {
+      setImageError("Please upload a photo of the textile.");
+      valid = false;
     }
-  }
+    if (!fabricType) {
+      setFabricError("Please select a fabric type.");
+      valid = false;
+    }
+    if (!valid) return;
+
+    await mutateAsync({
+      image_url: imageFile!.name,
+      fabric_type: fabricType,
+      description,
+      quantity,
+      location,
+    });
+
+    router.push("/supplier/listings");
+  };
 
   return (
-    <main>
+    <div className="max-w-2xl">
       <PageHeader
-        title="Upload Waste"
-        description="Create a new listing for available waste materials."
-        action={
-          <Link
-            href="/supplier/listings"
-            className="text-sm text-accent hover:underline"
-          >
-            View my listings
-          </Link>
-        }
+        title="Upload Textile Waste"
+        description="Fill in the details below and we'll take it from there."
       />
 
-      <form
-        onSubmit={handleSubmit}
-        className="mt-6 max-w-2xl bg-card border border-border rounded-2xl p-6"
-      >
-        <div className="grid grid-cols-1 gap-4">
-          <Input
-            label="Listing title"
-            placeholder="E.g. Denim remnants — 3kg"
-            value={title}
-            onChange={(e) => setTitle(e.target.value)}
-            required
-          />
-
-          <div className="grid grid-cols-2 gap-4">
-            <div>
-              <label className="text-sm font-medium text-foreground">
-                Fabric type
-              </label>
-              <select
-                value={fabric}
-                onChange={(e) => setFabric(e.target.value)}
-                required
-                className="w-full h-11 px-3.5 rounded-xl border bg-input text-foreground text-sm outline-none focus:ring-2 focus:ring-primary/20"
-              >
-                <option value="">Select fabric</option>
-                <option value="Cotton">Cotton</option>
-                <option value="Denim">Denim</option>
-                <option value="Linen">Linen</option>
-                <option value="Mixed">Mixed</option>
-                <option value="Other">Other</option>
-              </select>
-            </div>
-
-            <div>
-              <Input
-                label="Quantity (kg)"
-                type="number"
-                placeholder="e.g. 3.5"
-                value={quantity}
-                onChange={(e) =>
-                  setQuantity(
-                    e.target.value === "" ? "" : Number(e.target.value),
-                  )
-                }
-                required
-                min={0.1}
-                step={0.1}
-              />
-            </div>
+      <form onSubmit={handleSubmit} className="flex flex-col gap-6">
+        {/* ── Image upload ─────────────────────────────── */}
+        <div className="bg-card border border-border rounded-2xl overflow-hidden">
+          <div className="px-5 py-4 border-b border-border">
+            <p className="text-sm font-medium text-foreground">Photo</p>
+            <p className="text-xs text-foreground-muted mt-0.5">
+              Upload a clear image of the textile
+            </p>
           </div>
 
-          <div className="grid grid-cols-1 gap-4">
+          <div className="p-5">
+            {imagePreview ? (
+              <div className="relative w-full h-56 rounded-xl overflow-hidden">
+                <Image
+                  src={imagePreview}
+                  alt="Textile preview"
+                  fill
+                  className="object-cover"
+                />
+                <button
+                  type="button"
+                  onClick={clearImage}
+                  className="absolute top-3 right-3 w-8 h-8 rounded-full
+                             bg-primary/80 text-primary-foreground
+                             flex items-center justify-center
+                             hover:bg-primary transition-colors"
+                >
+                  <X size={14} />
+                </button>
+              </div>
+            ) : (
+              <label
+                className="flex flex-col items-center justify-center gap-3
+                                w-full h-48 rounded-xl border-2 border-dashed
+                                border-border bg-background cursor-pointer
+                                hover:border-primary/40 hover:bg-background-subtle
+                                transition-all duration-200"
+              >
+                <div
+                  className="w-11 h-11 rounded-xl bg-card border border-border
+                                flex items-center justify-center"
+                >
+                  <ImagePlus size={18} className="text-foreground-muted" />
+                </div>
+                <div className="flex flex-col items-center gap-1 text-center">
+                  <span className="text-sm font-medium text-foreground">
+                    Click to upload
+                  </span>
+                  <span className="text-xs text-foreground-muted">
+                    JPG, PNG or WEBP · Max 5MB
+                  </span>
+                </div>
+                <input
+                  type="file"
+                  accept="image/jpeg,image/png,image/webp"
+                  className="hidden"
+                  onChange={handleImage}
+                />
+              </label>
+            )}
+            {imageError && (
+              <p className="text-xs text-destructive mt-2">{imageError}</p>
+            )}
+          </div>
+        </div>
+
+        {/* ── Fabric type ───────────────────────────────── */}
+        <div className="bg-card border border-border rounded-2xl overflow-hidden">
+          <div className="px-5 py-4 border-b border-border">
+            <p className="text-sm font-medium text-foreground">Fabric Type</p>
+            <p className="text-xs text-foreground-muted mt-0.5">
+              Select the closest match
+            </p>
+          </div>
+          <div className="p-5">
+            <div className="flex flex-wrap gap-2">
+              {FABRIC_TYPES.map((type) => (
+                <button
+                  key={type}
+                  type="button"
+                  onClick={() => {
+                    setFabricType(type);
+                    setFabricError("");
+                  }}
+                  className={`px-4 py-2 rounded-xl text-sm border transition-all duration-150
+                              ${
+                                fabricType === type
+                                  ? "bg-primary text-primary-foreground border-primary"
+                                  : "bg-background text-foreground-muted border-border hover:border-primary/40 hover:text-foreground"
+                              }`}
+                >
+                  {type}
+                </button>
+              ))}
+            </div>
+            {fabricError && (
+              <p className="text-xs text-destructive mt-3">{fabricError}</p>
+            )}
+          </div>
+        </div>
+
+        {/* ── Details ───────────────────────────────────── */}
+        <div className="bg-card border border-border rounded-2xl overflow-hidden">
+          <div className="px-5 py-4 border-b border-border">
+            <p className="text-sm font-medium text-foreground">Details</p>
+            <p className="text-xs text-foreground-muted mt-0.5">
+              Help us understand what you're donating
+            </p>
+          </div>
+          <div className="p-5 flex flex-col gap-4">
             <Input
-              label="Location"
+              label="Quantity"
+              type="text"
+              placeholder="e.g. 5kg or 3 bags"
+              value={quantity}
+              onChange={(e) => setQuantity(e.target.value)}
+              required
+            />
+
+            <div className="flex flex-col gap-1.5">
+              <label className="text-sm font-medium text-foreground">
+                Description
+              </label>
+              <textarea
+                value={description}
+                onChange={(e) => setDescription(e.target.value)}
+                placeholder="Describe the condition, colour, and any other relevant details..."
+                required
+                rows={3}
+                className="w-full px-3.5 py-3 rounded-xl border border-border bg-input
+                           text-sm text-foreground placeholder:text-foreground-muted/60
+                           outline-none transition-all duration-200 resize-none
+                           focus:ring-2 focus:ring-primary/20 focus:border-input-focus"
+              />
+            </div>
+
+            <Input
+              label="Pickup location"
+              type="text"
               placeholder="e.g. Yaba, Lagos"
               value={location}
               onChange={(e) => setLocation(e.target.value)}
               required
             />
-
-            <div>
-              <label className="text-sm font-medium text-foreground inline-block mb-2">
-                Images
-              </label>
-              <input
-                type="file"
-                accept="image/*"
-                multiple
-                onChange={(e) => setImages(e.target.files)}
-                className="block w-full text-sm text-foreground"
-              />
-
-              {images && images.length > 0 && (
-                <div className="mt-3 flex gap-3 flex-wrap">
-                  {Array.from(images).map((f, i) => (
-                    <img
-                      key={i}
-                      src={URL.createObjectURL(f)}
-                      alt={f.name}
-                      className="w-20 h-20 object-cover rounded-md border"
-                    />
-                  ))}
-                </div>
-              )}
-            </div>
           </div>
-
-          <div className="flex flex-col gap-1.5">
-            <label className="text-sm font-medium text-foreground">
-              Description
-            </label>
-            <textarea
-              value={description}
-              onChange={(e) => setDescription(e.target.value)}
-              className="w-full min-h-[120px] p-3.5 rounded-xl border bg-input text-foreground text-sm outline-none focus:ring-2 focus:ring-primary/20"
-              placeholder="Optional details about the material, condition, or notes for pickup"
-            />
-          </div>
-
-          <div className="flex items-center justify-end gap-3">
-            <button
-              type="submit"
-              disabled={loading}
-              className="inline-flex items-center gap-2 bg-primary text-primary-foreground px-4 py-2 rounded-xl text-sm font-medium hover:bg-primary-hover transition-colors disabled:opacity-50"
-            >
-              {loading ? "Submitting..." : "Submit listing"}
-            </button>
-          </div>
-
-          {message && (
-            <p className="text-sm text-foreground-muted">{message}</p>
-          )}
         </div>
+
+        {/* ── Server error ──────────────────────────────── */}
+        {error && (
+          <p
+            className="text-sm text-destructive bg-destructive/10 border
+                        border-destructive/20 px-4 py-3 rounded-xl"
+          >
+            {error.message}
+          </p>
+        )}
+
+        {/* ── Submit ────────────────────────────────────── */}
+        <button
+          type="submit"
+          disabled={isPending}
+          className="group h-11 w-full flex items-center justify-center gap-2
+                     bg-primary text-primary-foreground rounded-xl font-medium text-sm
+                     hover:bg-primary-hover transition-all duration-200
+                     hover:-translate-y-0.5 hover:shadow-lg
+                     disabled:opacity-60 disabled:cursor-not-allowed
+                     disabled:translate-y-0 disabled:shadow-none"
+        >
+          {isPending ? (
+            <span
+              className="w-4 h-4 border-2 border-primary-foreground/30
+                             border-t-primary-foreground rounded-full animate-spin"
+            />
+          ) : (
+            <>
+              Submit Donation
+              <ArrowRight
+                size={15}
+                className="group-hover:translate-x-1 transition-transform"
+              />
+            </>
+          )}
+        </button>
       </form>
-    </main>
+    </div>
   );
 }
