@@ -15,50 +15,45 @@ export default function UserMenu({ variant }: UserMenuProps) {
   const ref = useRef<HTMLDivElement>(null);
   const router = useRouter();
   const isAdmin = variant === "admin";
-  const { logout } = useAuth();
+  const { user, logout, logoutPending } = useAuth();
+
+  const initials = user?.name
+    ? user.name
+        .split(" ")
+        .map((n) => n[0])
+        .join("")
+        .slice(0, 2)
+        .toUpperCase()
+    : "U";
 
   useEffect(() => {
     function handleClick(e: MouseEvent) {
-      if (ref.current && !ref.current.contains(e.target as Node)) {
+      if (ref.current && !ref.current.contains(e.target as Node))
         setOpen(false);
-      }
     }
     document.addEventListener("mousedown", handleClick);
     return () => document.removeEventListener("mousedown", handleClick);
   }, []);
 
-  async function handleLogout() {
-    try {
-      await logout();
-    } catch (error) {}
-  }
-
   return (
     <div ref={ref} className="relative">
       <button
         onClick={() => setOpen((p) => !p)}
-        className="flex items-center gap-2 p-1.5 rounded-xl hover:bg-muted
-                   transition-colors group"
+        className="flex items-center gap-2 p-1.5 rounded-xl hover:bg-muted transition-colors"
       >
-        {/* Avatar */}
         <div
           className={`w-8 h-8 rounded-lg flex items-center justify-center text-xs font-bold shrink-0
-                      ${
-                        isAdmin
-                          ? "bg-accent text-primary-foreground"
-                          : "bg-primary text-primary-foreground"
-                      }`}
+                      ${isAdmin ? "bg-accent text-primary-foreground" : "bg-primary text-primary-foreground"}`}
         >
-          U
+          {initials}
         </div>
 
-        {/* Name + role — hidden on small screens */}
         <div className="hidden sm:flex flex-col items-start">
           <span className="text-xs font-medium text-foreground leading-none">
-            User Name
+            {user?.name ?? "—"}
           </span>
           <span className="text-[11px] text-foreground-muted leading-none mt-0.5 capitalize">
-            {isAdmin ? "Admin" : "Member"}
+            {user?.role ?? "Member"}
           </span>
         </div>
 
@@ -69,18 +64,17 @@ export default function UserMenu({ variant }: UserMenuProps) {
         />
       </button>
 
-      {/* Dropdown */}
       {open && (
         <div
           className="absolute right-0 top-full mt-2 w-48 bg-card border border-border
-                     rounded-xl shadow-modal z-50 overflow-hidden py-1"
+                        rounded-xl shadow-modal z-50 overflow-hidden py-1"
         >
           <div className="px-3 py-2.5 border-b border-border">
             <p className="text-xs font-medium text-foreground truncate">
-              User Name
+              {user?.name ?? "User"}
             </p>
             <p className="text-[11px] text-foreground-muted truncate">
-              user@example.com
+              {user?.email ?? "user@tayorasustain.com"}
             </p>
           </div>
 
@@ -89,21 +83,25 @@ export default function UserMenu({ variant }: UserMenuProps) {
               setOpen(false);
               router.push(isAdmin ? "/admin/profile" : "/profile");
             }}
-            className="w-full flex items-center gap-2.5 px-3 py-2.5 text-sm
-                       text-foreground-muted hover:text-foreground hover:bg-muted
-                       transition-colors"
+            className="w-full flex items-center gap-2.5 px-3 py-2.5 text-sm text-foreground-muted hover:text-foreground hover:bg-muted transition-colors"
           >
             <User size={14} />
             Profile
           </button>
 
           <button
-            onClick={handleLogout}
-            className="w-full flex items-center gap-2.5 px-3 py-2.5 text-sm
-                       text-destructive hover:bg-destructive/10
-                       transition-colors"
+            onClick={() => {
+              setOpen(false);
+              logout();
+            }}
+            disabled={logoutPending}
+            className="w-full flex items-center gap-2.5 px-3 py-2.5 text-sm text-destructive hover:bg-destructive/10 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
           >
-            <LogOut size={14} />
+            {logoutPending ? (
+              <span className="w-3.5 h-3.5 border-2 border-destructive/30 border-t-destructive rounded-full animate-spin" />
+            ) : (
+              <LogOut size={14} />
+            )}
             Log out
           </button>
         </div>

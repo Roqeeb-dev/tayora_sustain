@@ -23,8 +23,7 @@ export default function DashboardShell({
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
   return (
-    <div className="min-h-screen flex bg-background">
-      {/* Mobile overlay */}
+    <div className="h-screen flex overflow-hidden bg-background">
       {sidebarOpen && (
         <div
           className="fixed inset-0 z-20 bg-primary/40 backdrop-blur-sm lg:hidden"
@@ -32,7 +31,6 @@ export default function DashboardShell({
         />
       )}
 
-      {/* Sidebar */}
       <Sidebar
         navItems={navItems}
         variant={variant}
@@ -40,15 +38,14 @@ export default function DashboardShell({
         onClose={() => setSidebarOpen(false)}
       />
 
-      {/* Main */}
-      <div className="flex-1 flex flex-col min-w-0">
+      <div className="flex-1 flex flex-col min-w-0 overflow-hidden">
         <Topbar
           pageTitle={pageTitle}
           action={topbarAction}
           variant={variant}
           onMenuClick={() => setSidebarOpen(true)}
         />
-        <main className="flex-1 p-4 sm:p-6 lg:p-8 overflow-y-auto">
+        <main className="flex-1 overflow-y-auto p-4 sm:p-6 lg:p-8">
           {children}
         </main>
       </div>
