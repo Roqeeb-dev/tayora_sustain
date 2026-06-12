@@ -11,6 +11,7 @@ import {
   LoginPayload,
   RegisterPayload,
 } from "@/services/auth.service";
+import type { LoginResponse } from "@/services/auth.service";
 
 const ROLE_REDIRECTS: Record<string, string> = {
   donor: "/donor/dashboard",
@@ -35,10 +36,10 @@ export function useAuth() {
 
   const isAuthenticated = !!user;
 
-  const loginMutation = useMutation({
+  const loginMutation = useMutation<LoginResponse, Error, LoginPayload>({
     mutationFn: (payload: LoginPayload) => login(payload),
     onSuccess: (data) => {
-      const loggedInUser = (data as any)?.user ?? (data as any);
+      const loggedInUser = data?.user ?? data;
       queryClient.setQueryData(queryKeys.auth.me, loggedInUser);
       router.push(ROLE_REDIRECTS[loggedInUser?.role] ?? "/");
     },
@@ -47,9 +48,7 @@ export function useAuth() {
   const registerMutation = useMutation({
     mutationFn: (payload: RegisterPayload) => register(payload),
     onSuccess: (data) => {
-      const registeredUser = (data as any)?.user ?? (data as any);
-      queryClient.setQueryData(queryKeys.auth.me, registeredUser);
-      router.push(ROLE_REDIRECTS[registeredUser?.role] ?? "/");
+      queryClient.setQueryData(queryKeys.auth.me, data);
     },
   });
 

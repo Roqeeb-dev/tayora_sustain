@@ -61,11 +61,11 @@ src/
 ├── components/
 │   ├── ui/                         # Button, Input, Badge, Modal, Skeleton, etc.
 │   ├── shared/                     # Sidebar, TopBar, StatusTimeline, FileUpload, etc.
-│   ├── supplier/                   # WasteUploadForm, ListingCard, PickupCard
+│   ├── donor/                      # WasteUploadForm, ListingCard, PickupCard
 │   ├── requester/                  # MaterialCard, MaterialFilters, RequestForm
 │   ├── admin/                      # MatchingPanel, LogisticsTable, ImpactMetricsGrid
 │   └── landing/                    # Hero, HowItWorks, RoleCards, ImpactCounter
-├── store/                          # authStore, supplierStore, requesterStore, adminStore
+├── store/                          # authStore, donorStore, requesterStore, adminStore
 ├── services/                       # api.ts (axios base) + per-portal service files
 ├── hooks/                          # useAuth, useListings, useRequests, useNotifications
 ├── types/                          # auth, listing, request, admin types
@@ -91,7 +91,7 @@ Each portal has its own `layout.tsx` with a role-specific sidebar/shell. `middle
 ## Status Lifecycles
 
 ```
-Supplier listing:  Pending Review → Approved → Matched / Sent to Upcycling → Collected
+Donor listing:  Pending Review → Approved → Matched / Sent to Upcycling → Collected
 Requester request: Pending → Approved → Matched → In Transit → Delivered
 ```
 
@@ -122,7 +122,7 @@ Zustand stores are kept lean — UI state and session context only. Server data 
 
 ## Contributing
 
-- Branch convention: `feature/[portal]-[description]` (e.g. `feature/supplier-upload-form`)
+- Branch convention: `feature/[portal]-[description]` (e.g. `feature/donor-upload-form`)
 - No `any` types — strict TypeScript throughout
 - Pages stay thin; logic lives in hooks; hooks consume services
 - Zod schemas in `src/lib/validators.ts`, shared constants in `src/lib/constants.ts`

@@ -29,7 +29,7 @@ export interface LoginResponse {
   access_token: string;
   token_type: string;
   role: Role;
-  user?: User;
+  user: User;
 }
 
 export interface ForgotPasswordPayload {
@@ -70,12 +70,12 @@ export async function login(payload: LoginPayload): Promise<LoginResponse> {
       payload,
     );
     apiClient.setAuthToken(`${res.token_type} ${res.access_token}`);
-    const user = await getMe();
+
     return {
       access_token: res.access_token,
       token_type: res.token_type,
       role: res.role,
-      user,
+      user: res.user,
     };
   } catch (err) {
     if (err instanceof ApiError) {

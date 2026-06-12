@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { ArrowRight, Recycle, ShoppingBag, Check } from "lucide-react";
 import Input from "@/components/ui/Input";
@@ -35,14 +36,23 @@ export default function RegisterClient() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [role, setRole] = useState<Role>("donor");
+  const [showSuccess, setShowSuccess] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
       await register({ full_name: fullName, email, password, role });
+      setShowSuccess(true);
     } catch {
       // error
     }
+  };
+
+  const router = useRouter();
+
+  const handleDialogOk = () => {
+    setShowSuccess(false);
+    router.push(`/login?email=${encodeURIComponent(email)}`);
   };
 
   return (
@@ -165,8 +175,7 @@ export default function RegisterClient() {
                      bg-primary text-primary-foreground rounded-xl font-medium text-sm
                      hover:bg-primary-hover transition-all duration-200
                      hover:-translate-y-0.5 hover:shadow-lg
-                     disabled:opacity-60 disabled:cursor-not-allowed
-                     disabled:translate-y-0 disabled:shadow-none"
+                    disabled:opacity-60 disabled:cursor-not-allowed disabled:translate-y-0 disabled:shadow-none"
         >
           {registerPending ? (
             <span className="w-4 h-4 border-2 border-primary-foreground/30 border-t-primary-foreground rounded-full animate-spin" />
@@ -193,6 +202,33 @@ export default function RegisterClient() {
           .
         </p>
       </form>
+
+      {showSuccess && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center">
+          <div className="absolute inset-0 bg-black/40" />
+          <div className="relative w-full max-w-md bg-card rounded-xl p-6 shadow-lg">
+            <h3 className="text-lg font-semibold mb-2">Account created</h3>
+            <p className="text-sm text-foreground-muted mb-4">
+              Your account has been created. Click OK to go to the login page
+              and sign in.
+            </p>
+            <div className="flex justify-end gap-2">
+              <button
+                onClick={() => setShowSuccess(false)}
+                className="px-4 py-2 rounded-lg bg-muted hover:bg-muted/90"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={handleDialogOk}
+                className="px-4 py-2 rounded-lg bg-primary text-primary-foreground"
+              >
+                OK
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
