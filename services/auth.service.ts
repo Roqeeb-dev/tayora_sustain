@@ -25,6 +25,13 @@ export interface AuthResult {
   user: User;
 }
 
+export interface LoginResponse {
+  access_token: string;
+  token_type: string;
+  role: Role;
+  user?: User;
+}
+
 export interface ForgotPasswordPayload {
   email: string;
 }
@@ -56,15 +63,19 @@ export async function register(payload: RegisterPayload): Promise<User> {
   }
 }
 
-export async function login(payload: LoginPayload): Promise<AuthResult> {
+export async function login(payload: LoginPayload): Promise<LoginResponse> {
   try {
-    const res = await apiClient.post<AuthToken, LoginPayload>(
+    const res = await apiClient.post<LoginResponse, LoginPayload>(
       "/auth/login",
       payload,
     );
+    apiClient.setAuthToken(`${res.token_type} ${res.access_token}`);
+    const user = await getMe();
     return {
-      token: res,
-      user: normalizeUser(res.user),
+      access_token: res.access_token,
+      token_type: res.token_type,
+      role: res.role,
+      user,
     };
   } catch (err) {
     if (err instanceof ApiError) {
@@ -79,6 +90,7 @@ export async function login(payload: LoginPayload): Promise<AuthResult> {
 export async function logout(): Promise<void> {
   try {
     await apiClient.post("/auth/logout");
+    apiClient.setAuthToken(null);
   } catch {
     throw new Error("Logout failed. Please try again.");
   }

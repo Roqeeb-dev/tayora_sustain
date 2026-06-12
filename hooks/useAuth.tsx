@@ -37,9 +37,10 @@ export function useAuth() {
 
   const loginMutation = useMutation({
     mutationFn: (payload: LoginPayload) => login(payload),
-    onSuccess: ({ user }) => {
-      queryClient.setQueryData(queryKeys.auth.me, user);
-      router.push(ROLE_REDIRECTS[user.role] ?? "/");
+    onSuccess: (data) => {
+      const loggedInUser = (data as any)?.user ?? (data as any);
+      queryClient.setQueryData(queryKeys.auth.me, loggedInUser);
+      router.push(ROLE_REDIRECTS[loggedInUser?.role] ?? "/");
     },
   });
 
@@ -55,7 +56,7 @@ export function useAuth() {
     mutationFn: logout,
     onSuccess: () => {
       queryClient.removeQueries({ queryKey: queryKeys.auth.me });
-      router.push("/auth/login");
+      router.push("/login");
     },
   });
 
