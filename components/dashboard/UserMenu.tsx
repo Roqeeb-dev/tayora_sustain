@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { LogOut, User, ChevronDown } from "lucide-react";
 import { DashboardVariant } from "./types";
 import { useAuth } from "@/hooks/useAuth";
+import Dialog from "./Dialog";
 
 interface UserMenuProps {
   variant: DashboardVariant;
@@ -16,6 +17,7 @@ export default function UserMenu({ variant }: UserMenuProps) {
   const router = useRouter();
   const isAdmin = variant === "admin";
   const { user, logout, logoutPending } = useAuth();
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
 
   const initials = user?.name
     ? user.name
@@ -92,7 +94,7 @@ export default function UserMenu({ variant }: UserMenuProps) {
           <button
             onClick={() => {
               setOpen(false);
-              logout();
+              setIsDialogOpen(true);
             }}
             disabled={logoutPending}
             className="w-full flex items-center gap-2.5 px-3 py-2.5 text-sm text-destructive hover:bg-destructive/10 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
@@ -106,6 +108,21 @@ export default function UserMenu({ variant }: UserMenuProps) {
           </button>
         </div>
       )}
+
+      <Dialog
+        open={isDialogOpen}
+        type="confirm"
+        title="Confirm logout"
+        message="Are you sure you want to log out?"
+        cancelText="No, stay"
+        confirmText="Yes, log out"
+        onClose={() => setIsDialogOpen(false)}
+        onConfirm={() => {
+          setIsDialogOpen(false);
+          logout();
+        }}
+        loading={logoutPending}
+      />
     </div>
   );
 }
