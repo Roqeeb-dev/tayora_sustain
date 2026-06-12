@@ -60,7 +60,7 @@ export default function UploadPage() {
 
     await mutateAsync({
       image_url: imageFile!.name,
-      fabric_type: fabricType,
+      fabric_type: fabricType.toLowerCase(),
       description,
       quantity,
       location,

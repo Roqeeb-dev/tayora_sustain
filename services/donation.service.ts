@@ -11,23 +11,23 @@ export interface CreateDonationPayload {
 
 export type UpdateDonationPayload = Partial<CreateDonationPayload>;
 
-function toFormData(payload: Partial<CreateDonationPayload>): FormData {
-  const fd = new FormData();
-  if (payload.fabric_type) fd.append("fabric_type", payload.fabric_type);
-  if (payload.description) fd.append("description", payload.description);
-  if (payload.location) fd.append("location", payload.location);
-  if (payload.image_url) fd.append("image_url", payload.image_url);
-  if (payload.quantity) fd.append("quantity", payload.quantity);
-  return fd;
+function normalizePayload<T extends Partial<CreateDonationPayload>>(
+  payload: T,
+): T {
+  const out = { ...payload } as T;
+  if (out.fabric_type && typeof out.fabric_type === "string") {
+    out.fabric_type = out.fabric_type.trim().toLowerCase() as any;
+  }
+  return out;
 }
 
 export async function createDonation(
   payload: CreateDonationPayload,
 ): Promise<Donation> {
   try {
-    return await apiClient.postForm<Donation>(
+    return await apiClient.post<Donation, CreateDonationPayload>(
       "/donations",
-      toFormData(payload),
+      normalizePayload(payload),
     );
   } catch (err: any) {
     if (err instanceof ApiError) {
@@ -85,9 +85,9 @@ export async function updateDonation(
   payload: UpdateDonationPayload,
 ): Promise<Donation> {
   try {
-    return await apiClient.patchForm<Donation>(
+    return await apiClient.patch<Donation, UpdateDonationPayload>(
       `/donations/${donation_id}`,
-      toFormData(payload),
+      normalizePayload(payload),
     );
   } catch (err: any) {
     if (err instanceof ApiError) {

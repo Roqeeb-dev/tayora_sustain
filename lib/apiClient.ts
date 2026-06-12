@@ -57,6 +57,9 @@ export const apiClient = {
   ): Promise<T> {
     const res = await fetch(baseUrl + url, {
       method,
+      headers: {
+        ...defaultHeaders,
+      },
       body,
       credentials: "include",
     });
