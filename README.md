@@ -1,6 +1,6 @@
 # Tayora Sustain — Frontend
 
-A three-sided platform connecting textile waste suppliers, material requesters, and an admin coordination layer to close the loop on fashion waste — from collection through redistribution and upcycling.
+A three-sided platform connecting textile waste donors, material requesters, and an admin coordination layer to close the loop on fashion waste — from collection through redistribution and upcycling.
 
 > **Stack:** Next.js (App Router) · TypeScript · Tailwind CSS · Zustand
 
@@ -10,7 +10,7 @@ A three-sided platform connecting textile waste suppliers, material requesters, 
 
 | Portal        | Users                                     | Purpose                                               |
 | ------------- | ----------------------------------------- | ----------------------------------------------------- |
-| **Supplier**  | Individuals, tailors, brands              | Submit textile waste, track pickup status             |
+| **Donor**     | Individuals, tailors, brands              | Submit textile waste, track pickup status             |
 | **Requester** | Fashion students, small brands, creatives | Browse and request available materials                |
 | **Admin**     | Tayora Sustain team                       | Review, match, coordinate logistics, manage upcycling |
 
@@ -54,7 +54,7 @@ src/
 ├── app/
 │   ├── (public)/page.tsx           # Landing page
 │   ├── auth/                       # login, register, forgot-password
-│   ├── supplier/                   # dashboard, upload, listings/[id], pickups
+│   ├── donor/                   # dashboard, upload, listings/[id], pickups
 │   ├── requester/                  # dashboard, browse/[id], requests/[id], saved
 │   └── admin/                      # dashboard, listings/[id], requests, matching,
 │                                   # logistics, upcycling
@@ -80,7 +80,7 @@ src/
 | Portal    | Routes                                                                                                                                            |
 | --------- | ------------------------------------------------------------------------------------------------------------------------------------------------- |
 | Public    | `/` · `/auth/login` · `/auth/register` · `/auth/forgot-password`                                                                                  |
-| Supplier  | `/supplier/dashboard` · `/supplier/upload` · `/supplier/listings` · `/supplier/listings/[id]` · `/supplier/pickups`                               |
+| Donor     | `/donor/dashboard` · `/donor/upload` · `/donor/listings` · `/donor/listings/[id]` · `/donor/pickups`                                              |
 | Requester | `/requester/dashboard` · `/requester/browse` · `/requester/browse/[id]` · `/requester/requests` · `/requester/requests/[id]` · `/requester/saved` |
 | Admin     | `/admin/dashboard` · `/admin/listings` · `/admin/listings/[id]` · `/admin/requests` · `/admin/matching` · `/admin/logistics` · `/admin/upcycling` |
 
@@ -114,7 +114,7 @@ Zustand stores are kept lean — UI state and session context only. Server data 
 | Store            | Holds                                         |
 | ---------------- | --------------------------------------------- |
 | `authStore`      | Authenticated user, role, token               |
-| `supplierStore`  | Upload form draft                             |
+| `donorStore`     | Upload form draft                             |
 | `requesterStore` | Active browse filters, saved listing IDs      |
 | `adminStore`     | Bulk selection state, in-progress match draft |
 

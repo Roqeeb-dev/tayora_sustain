@@ -6,7 +6,7 @@ import { ArrowRight, Recycle, ShoppingBag, Check } from "lucide-react";
 import Input from "@/components/ui/Input";
 import { useAuth } from "@/hooks/useAuth";
 
-type Role = "supplier" | "requester";
+type Role = "donor" | "requester";
 
 const ROLES: {
   value: Role;
@@ -15,9 +15,9 @@ const ROLES: {
   description: string;
 }[] = [
   {
-    value: "supplier",
+    value: "donor",
     icon: <Recycle size={18} />,
-    label: "Supplier",
+    label: "Donor",
     description: "I have textile waste to donate",
   },
   {
@@ -34,7 +34,7 @@ export default function RegisterClient() {
   const [fullName, setFullName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [role, setRole] = useState<Role>("supplier");
+  const [role, setRole] = useState<Role>("donor");
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();

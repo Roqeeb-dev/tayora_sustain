@@ -3,7 +3,7 @@
 import { Truck, Clock, MapPin, Package } from "lucide-react";
 import PageHeader from "@/components/dashboard/PageHeader";
 import StatusBadge from "@/components/dashboard/StatusBadge";
-import { useDonations } from "@/hooks/useSupplier";
+import { useDonations } from "@/hooks/useDonor";
 import { Donation } from "@/types/donation";
 
 const PICKUP_STATUSES = ["approved", "collected"];

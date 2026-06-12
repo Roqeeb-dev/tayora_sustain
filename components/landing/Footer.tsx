@@ -4,7 +4,7 @@ import { InstagramIcon, XIcon, LinkedInIcon } from "@/public/icons/SocialIcons";
 
 const FOOTER_LINKS = [
   { label: "How It Works", href: "/#how-it-works" },
-  { label: "For Suppliers", href: "/#suppliers" },
+  { label: "For Donors", href: "/#donors" },
   { label: "For Requesters", href: "/#requesters" },
   { label: "About", href: "/#about" },
   { label: "Privacy Policy", href: "/privacy" },

@@ -5,13 +5,13 @@ import Link from "next/link";
 import { Upload } from "lucide-react";
 
 const NAV: NavItem[] = [
-  { label: "Dashboard", href: "/supplier/dashboard", icon: "LayoutDashboard" },
-  { label: "Upload Waste", href: "/supplier/upload", icon: "Upload" },
-  { label: "My Listings", href: "/supplier/listings", icon: "Package" },
-  { label: "Pickups", href: "/supplier/pickups", icon: "Truck" },
+  { label: "Dashboard", href: "/donor/dashboard", icon: "LayoutDashboard" },
+  { label: "Upload Waste", href: "/donor/upload", icon: "Upload" },
+  { label: "My Listings", href: "/donor/listings", icon: "Package" },
+  { label: "Pickups", href: "/donor/pickups", icon: "Truck" },
 ];
 
-export default function SupplierLayout({
+export default function DonorLayout({
   children,
 }: {
   children: React.ReactNode;
@@ -22,7 +22,7 @@ export default function SupplierLayout({
       variant="user"
       topbarAction={
         <Link
-          href="/supplier/upload"
+          href="/donor/upload"
           className="inline-flex items-center gap-2 text-sm bg-primary text-primary-foreground
                      px-4 py-2 rounded-xl hover:bg-primary-hover transition-colors font-medium"
         >
@@ -37,7 +37,7 @@ export default function SupplierLayout({
 }
 
 export const metadata: Metadata = {
-  title: "Supplier | Tayora Sustain",
+  title: "Donor | Tayora Sustain",
   description:
-    "Supplier dashboard — manage listings, uploads, and pickups on Tayora Sustain.",
+    "Donor dashboard — manage listings, uploads, and pickups on Tayora Sustain.",
 };

@@ -20,7 +20,7 @@ export const metadata: Metadata = {
     template: "%s | Tayora Sustain",
   },
   description:
-    "A circular economy platform connecting textile waste suppliers with material requesters — turning fashion waste into opportunity.",
+    "A circular economy platform connecting textile waste donors with material requesters — turning fashion waste into opportunity.",
   keywords: [
     "textile waste",
     "circular economy",
@@ -54,7 +54,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "Tayora Sustain",
     description:
-      "Connecting textile waste suppliers with material requesters. Fashion waste, reimagined.",
+      "Connecting textile waste donors with material requesters. Fashion waste, reimagined.",
     images: ["/og-image.png"],
   },
   icons: {

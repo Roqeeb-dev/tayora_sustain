@@ -1,9 +1,9 @@
-// src/app/requester/browse/page.tsx
 "use client";
 
 import { useState } from "react";
 import { Search, MapPin, Package, SlidersHorizontal, X } from "lucide-react";
 import Link from "next/link";
+import EmptyState from "@/components/ui/EmptyState";
 
 // Mock until materials service exists
 const FABRIC_TYPES = [
@@ -51,38 +51,6 @@ const MOCK_MATERIALS = [
     location: "VI, Lagos",
     status: "available",
   },
-  {
-    id: "5",
-    fabric_type: "Silk",
-    quantity: "2kg",
-    description: "Silk blend scraps from a bridal atelier.",
-    location: "Lekki, Lagos",
-    status: "available",
-  },
-  {
-    id: "6",
-    fabric_type: "Mixed",
-    quantity: "10kg",
-    description: "Assorted fabric remnants from multiple suppliers.",
-    location: "Oshodi, Lagos",
-    status: "available",
-  },
-  {
-    id: "7",
-    fabric_type: "Wool",
-    quantity: "4kg",
-    description: "Heavyweight wool offcuts, ideal for outerwear.",
-    location: "Ikoyi, Lagos",
-    status: "available",
-  },
-  {
-    id: "8",
-    fabric_type: "Cotton",
-    quantity: "7kg",
-    description: "Printed cotton remnants from a children's wear brand.",
-    location: "Agege, Lagos",
-    status: "available",
-  },
 ];
 
 export default function BrowsePage() {
@@ -126,10 +94,7 @@ export default function BrowsePage() {
             placeholder="Search by fabric, description or location..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            className="w-full h-10 pl-9 pr-4 rounded-xl border border-border bg-card
-                       text-sm text-foreground placeholder:text-foreground-muted/60
-                       outline-none focus:ring-2 focus:ring-primary/20 focus:border-input-focus
-                       transition-all"
+            className="w-full h-10 pl-9 pr-4 rounded-xl border border-border bg-card text-sm text-foreground placeholder:text-foreground-muted/60 outline-none focus:ring-2 focus:ring-primary/20 focus:border-input-focus transition-all"
           />
           {search && (
             <button
@@ -177,28 +142,22 @@ export default function BrowsePage() {
 
       {/* Empty state */}
       {filtered.length === 0 && (
-        <div className="flex flex-col items-center justify-center py-20 gap-4 text-center">
-          <div className="w-12 h-12 rounded-2xl bg-muted flex items-center justify-center">
-            <Package size={20} className="text-foreground-muted" />
-          </div>
-          <div className="flex flex-col gap-1">
-            <p className="font-display text-lg text-foreground">
-              No materials found.
-            </p>
-            <p className="text-sm text-foreground-muted">
-              Try adjusting your search or filter.
-            </p>
-          </div>
-          <button
-            onClick={() => {
-              setSearch("");
-              setActiveType("All");
-            }}
-            className="text-sm text-accent hover:underline"
-          >
-            Clear filters
-          </button>
-        </div>
+        <EmptyState
+          icon={Package}
+          title="No materials found."
+          description="Try adjusting your search or filter."
+          action={
+            <button
+              onClick={() => {
+                setSearch("");
+                setActiveType("All");
+              }}
+              className="text-sm text-accent hover:underline"
+            >
+              Clear filters
+            </button>
+          }
+        />
       )}
 
       {/* Grid */}
@@ -208,9 +167,7 @@ export default function BrowsePage() {
             <Link
               key={material.id}
               href={`/requester/browse/${material.id}`}
-              className="group flex flex-col bg-card border border-border rounded-2xl
-                         overflow-hidden hover:shadow-card-hover hover:-translate-y-0.5
-                         transition-all duration-200"
+              className="group flex flex-col bg-card border border-border rounded-2xl overflow-hidden hover:shadow-card-hover hover:-translate-y-0.5 transition-all duration-200"
             >
               {/* Image placeholder */}
               <div className="h-36 bg-background-subtle flex items-center justify-center border-b border-border">
@@ -219,10 +176,7 @@ export default function BrowsePage() {
 
               <div className="p-4 flex flex-col gap-2">
                 <div className="flex items-start justify-between gap-2">
-                  <span
-                    className="text-xs font-medium tracking-widest uppercase
-                                   text-foreground-muted"
-                  >
+                  <span className="text-xs font-medium tracking-widest uppercase text-foreground-muted">
                     {material.fabric_type}
                   </span>
                   <span

@@ -6,7 +6,7 @@ import { ImagePlus, X, ArrowRight } from "lucide-react";
 import Image from "next/image";
 import Input from "@/components/ui/Input";
 import PageHeader from "@/components/dashboard/PageHeader";
-import { useCreateDonation } from "@/hooks/useSupplier";
+import { useCreateDonation } from "@/hooks/useDonor";
 
 const FABRIC_TYPES = [
   "Cotton",
@@ -66,7 +66,7 @@ export default function UploadPage() {
       location,
     });
 
-    router.push("/supplier/listings");
+    router.push("/donor/listings");
   };
 
   return (
@@ -80,7 +80,7 @@ export default function UploadPage() {
         onSubmit={handleSubmit}
         className="grid grid-cols-1 lg:grid-cols-2 gap-6"
       >
-        {/* ── Left column ────────────────────────────────── */}
+        {/* Left column */}
         <div className="flex flex-col gap-6">
           {/* Image upload */}
           <div className="bg-card border border-border rounded-2xl overflow-hidden">
@@ -102,26 +102,14 @@ export default function UploadPage() {
                   <button
                     type="button"
                     onClick={clearImage}
-                    className="absolute top-3 right-3 w-8 h-8 rounded-full
-                               bg-primary/80 text-primary-foreground
-                               flex items-center justify-center
-                               hover:bg-primary transition-colors"
+                    className="absolute top-3 right-3 w-8 h-8 rounded-full bg-primary/80 text-primary-foreground flex items-center justify-center hover:bg-primary transition-colors"
                   >
                     <X size={14} />
                   </button>
                 </div>
               ) : (
-                <label
-                  className="flex flex-col items-center justify-center gap-3
-                                  w-full h-48 rounded-xl border-2 border-dashed
-                                  border-border bg-background cursor-pointer
-                                  hover:border-primary/40 hover:bg-background-subtle
-                                  transition-all duration-200"
-                >
-                  <div
-                    className="w-11 h-11 rounded-xl bg-card border border-border
-                                  flex items-center justify-center"
-                  >
+                <label className="flex flex-col items-center justify-center gap-3 w-full h-48 rounded-xl border-2 border-dashed border-border bg-background cursor-pointer hover:border-primary/40 hover:bg-background-subtle transition-all duration-200">
+                  <div className="w-11 h-11 rounded-xl bg-card border border-border flex items-center justify-center">
                     <ImagePlus size={18} className="text-foreground-muted" />
                   </div>
                   <div className="flex flex-col items-center gap-1 text-center">
@@ -164,12 +152,7 @@ export default function UploadPage() {
                       setFabricType(type);
                       setFabricError("");
                     }}
-                    className={`px-4 py-2 rounded-xl text-sm border transition-all duration-150
-                                ${
-                                  fabricType === type
-                                    ? "bg-primary text-primary-foreground border-primary"
-                                    : "bg-background text-foreground-muted border-border hover:border-primary/40 hover:text-foreground"
-                                }`}
+                    className={`px-4 py-2 rounded-xl text-sm border transition-all duration-150 ${fabricType === type ? "bg-primary text-primary-foreground border-primary" : "bg-background text-foreground-muted border-border hover:border-primary/40 hover:text-foreground"}`}
                   >
                     {type}
                   </button>
@@ -182,9 +165,8 @@ export default function UploadPage() {
           </div>
         </div>
 
-        {/* ── Right column ───────────────────────────────── */}
+        {/* Right column */}
         <div className="flex flex-col gap-6">
-          {/* Details */}
           <div className="bg-card border border-border rounded-2xl overflow-hidden">
             <div className="px-5 py-4 border-b border-border">
               <p className="text-sm font-medium text-foreground">Details</p>
@@ -211,10 +193,7 @@ export default function UploadPage() {
                   placeholder="Describe the condition, colour, and any other relevant details..."
                   required
                   rows={4}
-                  className="w-full px-3.5 py-3 rounded-xl border border-border bg-input
-                             text-sm text-foreground placeholder:text-foreground-muted/60
-                             outline-none transition-all duration-200 resize-none
-                             focus:ring-2 focus:ring-primary/20 focus:border-input-focus"
+                  className="w-full px-3.5 py-3 rounded-xl border border-border bg-input text-sm text-foreground placeholder:text-foreground-muted/60 outline-none transition-all duration-200 resize-none focus:ring-2 focus:ring-primary/20 focus:border-input-focus"
                 />
               </div>
               <Input
@@ -229,10 +208,7 @@ export default function UploadPage() {
           </div>
 
           {error && (
-            <p
-              className="text-sm text-destructive bg-destructive/10 border
-                          border-destructive/20 px-4 py-3 rounded-xl"
-            >
+            <p className="text-sm text-destructive bg-destructive/10 border border-destructive/20 px-4 py-3 rounded-xl">
               {error.message}
             </p>
           )}
@@ -240,18 +216,10 @@ export default function UploadPage() {
           <button
             type="submit"
             disabled={isPending}
-            className="group h-11 w-full flex items-center justify-center gap-2
-                       bg-primary text-primary-foreground rounded-xl font-medium text-sm
-                       hover:bg-primary-hover transition-all duration-200
-                       hover:-translate-y-0.5 hover:shadow-lg
-                       disabled:opacity-60 disabled:cursor-not-allowed
-                       disabled:translate-y-0 disabled:shadow-none"
+            className="group h-11 w-full flex items-center justify-center gap-2 bg-primary text-primary-foreground rounded-xl font-medium text-sm hover:bg-primary-hover transition-all duration-200 hover:-translate-y-0.5 hover:shadow-lg disabled:opacity-60 disabled:cursor-not-allowed disabled:translate-y-0 disabled:shadow-none"
           >
             {isPending ? (
-              <span
-                className="w-4 h-4 border-2 border-primary-foreground/30
-                               border-t-primary-foreground rounded-full animate-spin"
-              />
+              <span className="w-4 h-4 border-2 border-primary-foreground/30 border-t-primary-foreground rounded-full animate-spin" />
             ) : (
               <>
                 Submit Donation

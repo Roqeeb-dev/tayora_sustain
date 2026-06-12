@@ -1,4 +1,4 @@
-export type Role = "supplier" | "requester" | "admin";
+export type Role = "donor" | "requester" | "admin";
 
 export interface ServerUser {
   id: string;

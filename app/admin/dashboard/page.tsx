@@ -70,28 +70,28 @@ const STATS = [
 const PENDING_LISTINGS = [
   {
     id: "1",
-    supplier: "Fatima A.",
+    donor: "Fatima A.",
     title: "Ankara offcuts — 5kg",
     fabric: "Ankara",
     submitted: "2 hours ago",
   },
   {
     id: "2",
-    supplier: "Chidi O.",
+    donor: "Chidi O.",
     title: "Denim remnants — 8kg",
     fabric: "Denim",
     submitted: "4 hours ago",
   },
   {
     id: "3",
-    supplier: "Amara N.",
+    donor: "Amara N.",
     title: "Cotton scraps — 3kg",
     fabric: "Cotton",
     submitted: "Yesterday",
   },
   {
     id: "4",
-    supplier: "Tolu B.",
+    donor: "Tolu B.",
     title: "Mixed fabric — 6kg",
     fabric: "Mixed",
     submitted: "Yesterday",
@@ -193,7 +193,7 @@ export default function AdminDashboardPage() {
                     {listing.title}
                   </p>
                   <p className="text-xs text-foreground-muted">
-                    {listing.supplier} · {listing.fabric} · {listing.submitted}
+                    {listing.donor} · {listing.fabric} · {listing.submitted}
                   </p>
                 </div>
 

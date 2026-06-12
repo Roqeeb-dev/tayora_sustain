@@ -1,9 +1,13 @@
+// src/app/requester/requests/page.tsx
 "use client";
 
 import Link from "next/link";
 import { ClipboardList, ArrowRight } from "lucide-react";
 import PageHeader from "@/components/dashboard/PageHeader";
 import StatusBadge from "@/components/dashboard/StatusBadge";
+import LoadingState from "@/components/ui/LoadingState";
+import EmptyState from "@/components/ui/EmptyState";
+import ErrorState from "@/components/ui/ErrorState";
 import { useRequests } from "@/hooks/useRequester";
 
 const STATUS_LABEL: Record<string, string> = {
@@ -24,9 +28,7 @@ export default function MyRequestsPage() {
         action={
           <Link
             href="/requester/browse"
-            className="inline-flex items-center gap-2 bg-primary text-primary-foreground
-                       px-4 py-2.5 rounded-xl text-sm font-medium hover:bg-primary-hover
-                       transition-colors"
+            className="inline-flex items-center gap-2 bg-primary text-primary-foreground px-4 py-2.5 rounded-xl text-sm font-medium hover:bg-primary-hover transition-colors"
           >
             Browse Materials
           </Link>
@@ -34,58 +36,31 @@ export default function MyRequestsPage() {
       />
 
       {/* Loading */}
-      {isLoading && (
-        <div className="flex flex-col gap-3">
-          {Array.from({ length: 4 }).map((_, i) => (
-            <div
-              key={i}
-              className="bg-card border border-border rounded-2xl p-5 animate-pulse
-                         flex items-center gap-4"
-            >
-              <div className="w-9 h-9 rounded-xl bg-muted shrink-0" />
-              <div className="flex-1 flex flex-col gap-2">
-                <div className="h-3.5 bg-muted rounded w-1/3" />
-                <div className="h-3 bg-muted rounded w-1/2" />
-              </div>
-              <div className="h-6 w-16 bg-muted rounded-full" />
-            </div>
-          ))}
-        </div>
-      )}
+      {isLoading && <LoadingState title="Loading your requests..." />}
 
       {/* Error */}
       {error && (
-        <p
-          className="text-sm text-destructive bg-destructive/10 border
-                      border-destructive/20 px-4 py-3 rounded-xl"
-        >
-          {error.message}
-        </p>
+        <ErrorState
+          title="Could not load requests."
+          description={error.message}
+        />
       )}
 
       {/* Empty */}
       {!isLoading && !error && requests?.length === 0 && (
-        <div className="flex flex-col items-center justify-center py-20 gap-4 text-center">
-          <div className="w-12 h-12 rounded-2xl bg-muted flex items-center justify-center">
-            <ClipboardList size={20} className="text-foreground-muted" />
-          </div>
-          <div className="flex flex-col gap-1">
-            <p className="font-display text-lg text-foreground">
-              No requests yet.
-            </p>
-            <p className="text-sm text-foreground-muted">
-              Browse available materials and submit your first request.
-            </p>
-          </div>
-          <Link
-            href="/requester/browse"
-            className="inline-flex items-center gap-2 bg-primary text-primary-foreground
-                       px-4 py-2.5 rounded-xl text-sm font-medium hover:bg-primary-hover
-                       transition-colors"
-          >
-            Browse Materials
-          </Link>
-        </div>
+        <EmptyState
+          icon={ClipboardList}
+          title="No requests yet."
+          description="Browse available materials and submit your first request."
+          action={
+            <Link
+              href="/requester/browse"
+              className="inline-flex items-center gap-2 bg-primary text-primary-foreground px-4 py-2.5 rounded-xl text-sm font-medium hover:bg-primary-hover transition-colors"
+            >
+              Browse Materials
+            </Link>
+          }
+        />
       )}
 
       {/* List */}
@@ -95,9 +70,7 @@ export default function MyRequestsPage() {
             <Link
               key={req.id}
               href={`/requester/requests/${req.id}`}
-              className="group flex items-center gap-4 bg-card border border-border
-                         rounded-2xl p-5 hover:shadow-card hover:-translate-y-0.5
-                         transition-all duration-200"
+              className="group flex items-center gap-4 bg-card border border-border rounded-2xl p-5 hover:shadow-card hover:-translate-y-0.5 transition-all duration-200"
             >
               <div
                 className="w-9 h-9 rounded-xl bg-background-subtle
@@ -119,8 +92,7 @@ export default function MyRequestsPage() {
                 <StatusBadge status={req.status} />
                 <ArrowRight
                   size={14}
-                  className="text-foreground-muted group-hover:text-foreground
-                             group-hover:translate-x-0.5 transition-all"
+                  className="text-foreground-muted group-hover:text-foreground group-hover:translate-x-0.5 transition-all"
                 />
               </div>
             </Link>

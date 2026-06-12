@@ -4,11 +4,11 @@ import { useState } from "react";
 import Link from "next/link";
 import { ArrowRight, Recycle, ShoppingBag } from "lucide-react";
 
-type Role = "supplier" | "requester";
+type Role = "donor" | "requester";
 
 const CONTENT = {
-  supplier: {
-    eyebrow: "For Suppliers",
+  donor: {
+    eyebrow: "For Donors",
     headline: (
       <>
         Your textile waste
@@ -25,7 +25,7 @@ const CONTENT = {
     cta: {
       primary: {
         label: "Start Donating",
-        href: "/auth/register?role=supplier",
+        href: "/auth/register?role=donor",
       },
       secondary: { label: "See how it works", href: "/#how-it-works" },
     },
@@ -45,7 +45,7 @@ const CONTENT = {
       </>
     ),
     subtext:
-      "Browse verified textile materials sourced from suppliers across Nigeria. Filter by fabric type, quantity, and location — then request exactly what you need for your next collection or project.",
+      "Browse verified textile materials sourced from donors across Nigeria. Filter by fabric type, quantity, and location — then request exactly what you need for your next collection or project.",
     cta: {
       primary: {
         label: "Browse Materials",
@@ -57,7 +57,7 @@ const CONTENT = {
 };
 
 export default function Hero() {
-  const [role, setRole] = useState<Role>("supplier");
+  const [role, setRole] = useState<Role>("donor");
   const content = CONTENT[role];
 
   return (
@@ -76,7 +76,7 @@ export default function Hero() {
           <div className="max-w-3xl">
             {/* Role toggle */}
             <div className="inline-flex items-center bg-card border border-border rounded-xl p-1 mb-10">
-              {(["supplier", "requester"] as Role[]).map((r) => (
+              {(["donor", "requester"] as Role[]).map((r) => (
                 <button
                   key={r}
                   onClick={() => setRole(r)}
@@ -86,12 +86,12 @@ export default function Hero() {
                       : "text-foreground-muted hover:text-foreground"
                   }`}
                 >
-                  {r === "supplier" ? (
+                  {r === "donor" ? (
                     <Recycle size={14} />
                   ) : (
                     <ShoppingBag size={14} />
                   )}
-                  {r === "supplier" ? "I have waste" : "I need materials"}
+                  {r === "donor" ? "I have waste" : "I need materials"}
                 </button>
               ))}
             </div>

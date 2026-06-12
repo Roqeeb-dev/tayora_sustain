@@ -1,3 +1,5 @@
+"use client";
+
 import Link from "next/link";
 import {
   ClipboardList,
@@ -11,65 +13,12 @@ import {
 import StatsCard from "@/components/dashboard/StatsCard";
 import PageHeader from "@/components/dashboard/PageHeader";
 import StatusBadge from "@/components/dashboard/StatusBadge";
+import LoadingState from "@/components/ui/LoadingState";
+import EmptyState from "@/components/ui/EmptyState";
+import ErrorState from "@/components/ui/ErrorState";
+import { useRequests } from "@/hooks/useRequester";
 
-const STATS = [
-  {
-    label: "Total requests",
-    value: 7,
-    icon: ClipboardList,
-    trend: { value: "+2 this month", positive: true },
-  },
-  {
-    label: "Approved requests",
-    value: 4,
-    icon: CheckCircle,
-    trend: { value: "+1 this week", positive: true },
-  },
-  {
-    label: "Materials received",
-    value: 3,
-    icon: Package,
-    sub: "Successfully delivered",
-  },
-  {
-    label: "Saved listings",
-    value: 11,
-    icon: Bookmark,
-    sub: "Across all fabric types",
-  },
-];
-
-const RECENT_REQUESTS = [
-  {
-    id: "1",
-    title: "Cotton fabric — 4kg",
-    purpose: "Final year collection",
-    status: "delivered" as const,
-    date: "3 days ago",
-  },
-  {
-    id: "2",
-    title: "Ankara prints — 2kg",
-    purpose: "Client order",
-    status: "matched" as const,
-    date: "5 days ago",
-  },
-  {
-    id: "3",
-    title: "Denim offcuts — 6kg",
-    purpose: "Personal project",
-    status: "approved" as const,
-    date: "1 week ago",
-  },
-  {
-    id: "4",
-    title: "Mixed remnants — 3kg",
-    purpose: "Workshop materials",
-    status: "pending" as const,
-    date: "1 week ago",
-  },
-];
-
+// Mock until materials/saved services exist
 const AVAILABLE_MATERIALS = [
   {
     id: "1",
@@ -95,6 +44,42 @@ const AVAILABLE_MATERIALS = [
 ];
 
 export default function RequesterDashboardPage() {
+  const { data: requests, isLoading, error } = useRequests();
+
+  const totalRequests = requests?.length ?? 0;
+  const approvedCount =
+    requests?.filter((r) => r.status === "matched" || r.status === "fulfilled")
+      .length ?? 0;
+  const fulfilledCount =
+    requests?.filter((r) => r.status === "fulfilled").length ?? 0;
+
+  const STATS = [
+    {
+      label: "Total requests",
+      value: totalRequests,
+      icon: ClipboardList,
+    },
+    {
+      label: "Approved requests",
+      value: approvedCount,
+      icon: CheckCircle,
+    },
+    {
+      label: "Materials received",
+      value: fulfilledCount,
+      icon: Package,
+      sub: "Successfully delivered",
+    },
+    {
+      label: "Saved listings",
+      value: 0, // placeholder until saved service exists
+      icon: Bookmark,
+      sub: "Across all fabric types",
+    },
+  ];
+
+  const recentRequests = requests?.slice(0, 4) ?? [];
+
   return (
     <div>
       <PageHeader
@@ -103,9 +88,7 @@ export default function RequesterDashboardPage() {
         action={
           <Link
             href="/requester/browse"
-            className="inline-flex items-center gap-2 bg-primary text-primary-foreground
-                       px-4 py-2.5 rounded-xl text-sm font-medium hover:bg-primary-hover
-                       transition-colors"
+            className="inline-flex items-center gap-2 bg-primary text-primary-foreground px-4 py-2.5 rounded-xl text-sm font-medium hover:bg-primary-hover transition-colors"
           >
             <Search size={14} />
             Browse Materials
@@ -134,31 +117,47 @@ export default function RequesterDashboardPage() {
               View all <ArrowRight size={12} />
             </Link>
           </div>
-          <div className="divide-y divide-border">
-            {RECENT_REQUESTS.map((req) => (
-              <div
-                key={req.id}
-                className="flex items-center gap-4 px-5 py-3.5
-                           hover:bg-background-subtle transition-colors"
-              >
+
+          {isLoading && <LoadingState title="Loading requests..." />}
+
+          {error && (
+            <ErrorState
+              title="Could not load requests."
+              description={error.message}
+            />
+          )}
+
+          {!isLoading && !error && recentRequests.length === 0 && (
+            <EmptyState
+              icon={ClipboardList}
+              title="No requests yet."
+              description="Browse available materials and submit your first request."
+            />
+          )}
+
+          {!isLoading && recentRequests.length > 0 && (
+            <div className="divide-y divide-border">
+              {recentRequests.map((req) => (
                 <div
-                  className="w-8 h-8 rounded-lg bg-background-subtle
-                                flex items-center justify-center shrink-0"
+                  key={req.id}
+                  className="flex items-center gap-4 px-5 py-3.5 hover:bg-background-subtle transition-colors"
                 >
-                  <ClipboardList size={14} className="text-accent" />
+                  <div className="w-8 h-8 rounded-lg bg-background-subtle flex items-center justify-center shrink-0">
+                    <ClipboardList size={14} className="text-accent" />
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <p className="text-sm font-medium text-foreground truncate">
+                      {req.fabric_type} — {req.quantity_needed}
+                    </p>
+                    <p className="text-xs text-foreground-muted line-clamp-1">
+                      {req.purpose}
+                    </p>
+                  </div>
+                  <StatusBadge status={req.status} />
                 </div>
-                <div className="flex-1 min-w-0">
-                  <p className="text-sm font-medium text-foreground truncate">
-                    {req.title}
-                  </p>
-                  <p className="text-xs text-foreground-muted">
-                    {req.purpose} · {req.date}
-                  </p>
-                </div>
-                <StatusBadge status={req.status} />
-              </div>
-            ))}
-          </div>
+              ))}
+            </div>
+          )}
         </div>
 
         {/* New arrivals */}
@@ -174,33 +173,38 @@ export default function RequesterDashboardPage() {
               Browse all <ArrowRight size={12} />
             </Link>
           </div>
-          <div className="divide-y divide-border">
-            {AVAILABLE_MATERIALS.map((mat) => (
-              <div key={mat.id} className="px-5 py-4 flex flex-col gap-1.5">
-                <p className="text-sm font-medium text-foreground">
-                  {mat.title}
-                </p>
-                <div className="flex items-center gap-3">
-                  <span className="text-xs text-foreground-muted">
-                    {mat.fabric}
-                  </span>
-                  <span className="w-1 h-1 rounded-full bg-border" />
-                  <span className="text-xs text-foreground-muted">
-                    {mat.quantity}
-                  </span>
+
+          {AVAILABLE_MATERIALS.length > 0 ? (
+            <div className="divide-y divide-border">
+              {AVAILABLE_MATERIALS.map((mat) => (
+                <div key={mat.id} className="px-5 py-4 flex flex-col gap-1.5">
+                  <p className="text-sm font-medium text-foreground">
+                    {mat.title}
+                  </p>
+                  <div className="flex items-center gap-3">
+                    <span className="text-xs text-foreground-muted">
+                      {mat.fabric}
+                    </span>
+                    <span className="w-1 h-1 rounded-full bg-border" />
+                    <span className="text-xs text-foreground-muted">
+                      {mat.quantity}
+                    </span>
+                  </div>
+                  <div className="flex items-center gap-1.5">
+                    <MapPin
+                      size={11}
+                      className="text-foreground-muted shrink-0"
+                    />
+                    <span className="text-xs text-foreground-muted">
+                      {mat.location}
+                    </span>
+                  </div>
                 </div>
-                <div className="flex items-center gap-1.5">
-                  <MapPin
-                    size={11}
-                    className="text-foreground-muted shrink-0"
-                  />
-                  <span className="text-xs text-foreground-muted">
-                    {mat.location}
-                  </span>
-                </div>
-              </div>
-            ))}
-          </div>
+              ))}
+            </div>
+          ) : (
+            <EmptyState icon={Package} title="No new arrivals." />
+          )}
         </div>
       </div>
     </div>

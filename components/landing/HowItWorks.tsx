@@ -5,7 +5,7 @@ import { useEffect, useRef, useState } from "react";
 const STEPS = [
   {
     number: "01",
-    role: "Supplier",
+    role: "Donor",
     action: "Submit your waste",
     description:
       "Upload images of your leftover fabric, select the material type and quantity, and submit. Takes under three minutes.",

@@ -1,4 +1,5 @@
-import type { Metadata } from "next";
+"use client";
+
 import Link from "next/link";
 import {
   Package,
@@ -11,64 +12,10 @@ import {
 import StatsCard from "@/components/dashboard/StatsCard";
 import PageHeader from "@/components/dashboard/PageHeader";
 import StatusBadge from "@/components/dashboard/StatusBadge";
-
-const STATS = [
-  {
-    label: "Total listings",
-    value: 12,
-    icon: Package,
-    trend: { value: "+2 this month", positive: true },
-  },
-  {
-    label: "Pending review",
-    value: 3,
-    icon: Clock,
-    sub: "Awaiting admin approval",
-  },
-  {
-    label: "Collections completed",
-    value: 8,
-    icon: CheckCircle,
-    trend: { value: "+1 this week", positive: true },
-  },
-  {
-    label: "Total kg donated",
-    value: "340kg",
-    icon: Truck,
-    trend: { value: "+40kg", positive: true },
-  },
-];
-
-const RECENT_LISTINGS = [
-  {
-    id: "1",
-    title: "Ankara offcuts — 5kg",
-    fabric: "Ankara",
-    status: "approved" as const,
-    date: "2 days ago",
-  },
-  {
-    id: "2",
-    title: "Denim remnants — 3kg",
-    fabric: "Denim",
-    status: "pending" as const,
-    date: "4 days ago",
-  },
-  {
-    id: "3",
-    title: "Cotton scraps — 8kg",
-    fabric: "Cotton",
-    status: "collected" as const,
-    date: "1 week ago",
-  },
-  {
-    id: "4",
-    title: "Mixed fabric — 2kg",
-    fabric: "Mixed",
-    status: "rejected" as const,
-    date: "1 week ago",
-  },
-];
+import LoadingState from "@/components/ui/LoadingState";
+import EmptyState from "@/components/ui/EmptyState";
+import ErrorState from "@/components/ui/ErrorState";
+import { useDonations } from "@/hooks/useDonor";
 
 const UPCOMING_PICKUPS = [
   {
@@ -85,7 +32,41 @@ const UPCOMING_PICKUPS = [
   },
 ];
 
-export default function SupplierDashboardPage() {
+export default function DonorDashboardPage() {
+  const { data: donations, isLoading, error } = useDonations();
+
+  const totalListings = donations?.length ?? 0;
+  const pendingCount =
+    donations?.filter((d) => d.status === "pending").length ?? 0;
+  const collectedCount =
+    donations?.filter((d) => d.status === "collected").length ?? 0;
+
+  const STATS = [
+    {
+      label: "Total listings",
+      value: totalListings,
+      icon: Package,
+    },
+    {
+      label: "Pending review",
+      value: pendingCount,
+      icon: Clock,
+      sub: "Awaiting admin approval",
+    },
+    {
+      label: "Collections completed",
+      value: collectedCount,
+      icon: CheckCircle,
+    },
+    {
+      label: "Total kg donated",
+      value: "340kg",
+      icon: Truck,
+    },
+  ];
+
+  const recentListings = donations?.slice(0, 4) ?? [];
+
   return (
     <div>
       <PageHeader
@@ -93,7 +74,7 @@ export default function SupplierDashboardPage() {
         description="Welcome back. Here's an overview of your activity."
         action={
           <Link
-            href="/supplier/upload"
+            href="/donor/upload"
             className="inline-flex items-center gap-2 bg-primary text-primary-foreground px-4 py-2.5 rounded-xl text-sm font-medium hover:bg-primary-hover transition-colors"
           >
             <Upload size={15} />
@@ -117,33 +98,53 @@ export default function SupplierDashboardPage() {
               Recent Listings
             </h2>
             <Link
-              href="/supplier/listings"
+              href="/donor/listings"
               className="text-xs text-accent hover:underline flex items-center gap-1"
             >
               View all <ArrowRight size={12} />
             </Link>
           </div>
-          <div className="divide-y divide-border">
-            {RECENT_LISTINGS.map((listing) => (
-              <div
-                key={listing.id}
-                className="flex items-center gap-4 px-5 py-3.5"
-              >
-                <div className="w-8 h-8 rounded-lg bg-background-subtle flex items-center justify-center shrink-0">
-                  <Package size={14} className="text-accent" />
+
+          {isLoading && <LoadingState title="Loading listings..." />}
+
+          {error && (
+            <ErrorState
+              title="Could not load listings."
+              description={error.message}
+            />
+          )}
+
+          {!isLoading && !error && recentListings.length === 0 && (
+            <EmptyState
+              icon={Package}
+              title="No listings yet."
+              description="Upload your first textile donation to get started."
+            />
+          )}
+
+          {!isLoading && recentListings.length > 0 && (
+            <div className="divide-y divide-border">
+              {recentListings.map((donation) => (
+                <div
+                  key={donation.id}
+                  className="flex items-center gap-4 px-5 py-3.5"
+                >
+                  <div className="w-8 h-8 rounded-lg bg-background-subtle flex items-center justify-center shrink-0">
+                    <Package size={14} className="text-accent" />
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <p className="text-sm font-medium text-foreground truncate">
+                      {donation.fabric_type} — {donation.quantity}
+                    </p>
+                    <p className="text-xs text-foreground-muted line-clamp-1">
+                      {donation.description}
+                    </p>
+                  </div>
+                  <StatusBadge status={donation.status} />
                 </div>
-                <div className="flex-1 min-w-0">
-                  <p className="text-sm font-medium text-foreground truncate">
-                    {listing.title}
-                  </p>
-                  <p className="text-xs text-foreground-muted">
-                    {listing.fabric} · {listing.date}
-                  </p>
-                </div>
-                <StatusBadge status={listing.status} />
-              </div>
-            ))}
-          </div>
+              ))}
+            </div>
+          )}
         </div>
 
         {/* Upcoming pickups */}
@@ -153,12 +154,13 @@ export default function SupplierDashboardPage() {
               Upcoming Pickups
             </h2>
             <Link
-              href="/supplier/pickups"
+              href="/donor/pickups"
               className="text-xs text-accent hover:underline flex items-center gap-1"
             >
               View all <ArrowRight size={12} />
             </Link>
           </div>
+
           {UPCOMING_PICKUPS.length > 0 ? (
             <div className="divide-y divide-border">
               {UPCOMING_PICKUPS.map((pickup) => (
@@ -188,20 +190,10 @@ export default function SupplierDashboardPage() {
               ))}
             </div>
           ) : (
-            <div className="px-5 py-10 text-center">
-              <p className="text-sm text-foreground-muted">
-                No pickups scheduled yet.
-              </p>
-            </div>
+            <EmptyState icon={Truck} title="No pickups scheduled yet." />
           )}
         </div>
       </div>
     </div>
   );
 }
-
-export const metadata: Metadata = {
-  title: "Dashboard | Supplier — Tayora Sustain",
-  description:
-    "Your supplier dashboard — overview of listings, pickups, and activity.",
-};

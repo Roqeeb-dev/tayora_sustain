@@ -13,7 +13,7 @@ import {
 } from "@/services/auth.service";
 
 const ROLE_REDIRECTS: Record<string, string> = {
-  supplier: "/supplier/dashboard",
+  donor: "/donor/dashboard",
   requester: "/requester/dashboard",
   admin: "/admin/dashboard",
 };
@@ -46,9 +46,10 @@ export function useAuth() {
 
   const registerMutation = useMutation({
     mutationFn: (payload: RegisterPayload) => register(payload),
-    onSuccess: (user) => {
-      queryClient.setQueryData(queryKeys.auth.me, user);
-      router.push(ROLE_REDIRECTS[user.role] ?? "/");
+    onSuccess: (data) => {
+      const registeredUser = (data as any)?.user ?? (data as any);
+      queryClient.setQueryData(queryKeys.auth.me, registeredUser);
+      router.push(ROLE_REDIRECTS[registeredUser?.role] ?? "/");
     },
   });
 

@@ -9,7 +9,7 @@ const STATS = [
   {
     icon: Users,
     value: "3,200+",
-    label: "Suppliers & requesters",
+    label: "Donors & requesters",
   },
   {
     icon: Handshake,
@@ -30,7 +30,7 @@ const REASONS = [
   },
   {
     heading: "Creatives are priced out of quality materials",
-    body: "Independent designers and fashion students often can't afford new fabric at commercial rates. Meanwhile, suppliers discard perfectly usable textile because there's no efficient channel to move it.",
+    body: "Independent designers and fashion students often can't afford new fabric at commercial rates. Meanwhile, donors discard perfectly usable textile because there's no efficient channel to move it.",
   },
 ];
 
