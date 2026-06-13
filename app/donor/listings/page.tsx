@@ -3,14 +3,41 @@
 import Link from "next/link";
 import { Package, Upload } from "lucide-react";
 import PageHeader from "@/components/dashboard/PageHeader";
-import StatusBadge from "@/components/dashboard/StatusBadge";
 import LoadingState from "@/components/ui/LoadingState";
 import EmptyState from "@/components/ui/EmptyState";
 import ErrorState from "@/components/ui/ErrorState";
-import { useDonations } from "@/hooks/useDonor";
+import { useDeleteDonation, useDonations } from "@/hooks/useDonor";
+import ListingItem from "@/components/donor/ListingItem";
+import { useState } from "react";
+import Dialog from "@/components/dashboard/Dialog";
 
 export default function ListingsPage() {
   const { data: donations, isLoading, error } = useDonations();
+
+  const [isDialogShown, setIsDialogShown] = useState(false);
+  const deleteDonation = useDeleteDonation();
+
+  const [selectedId, setSelectedId] = useState<number | null>(null);
+  const [dialogLoading, setDialogLoading] = useState(false);
+
+  const requestDelete = (id: number) => {
+    setSelectedId(id);
+    setIsDialogShown(true);
+  };
+
+  const confirmDelete = async () => {
+    if (!selectedId) return;
+    setDialogLoading(true);
+    try {
+      await deleteDonation.mutateAsync(String(selectedId));
+    } catch (err) {
+      console.error("Delete failed", err);
+    } finally {
+      setDialogLoading(false);
+      setIsDialogShown(false);
+      setSelectedId(null);
+    }
+  };
 
   return (
     <div>
@@ -61,50 +88,27 @@ export default function ListingsPage() {
       {!isLoading && donations && donations.length > 0 && (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
           {donations.map((donation) => (
-            <Link
+            <ListingItem
               key={donation.id}
+              donation={donation}
               href={`/donor/listings/${donation.id}`}
-              className="group flex flex-col bg-card border border-border rounded-2xl overflow-hidden hover:shadow-card-hover hover:-translate-y-0.5 transition-all duration-200"
-            >
-              {/* Image */}
-              <div className="relative h-40 bg-muted overflow-hidden">
-                {donation.image_url ? (
-                  <img
-                    src={donation.image_url}
-                    alt={donation.fabric_type}
-                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                  />
-                ) : (
-                  <div className="w-full h-full flex items-center justify-center">
-                    <Package size={28} className="text-border" />
-                  </div>
-                )}
-                <div className="absolute top-3 left-3">
-                  <StatusBadge status={donation.status} />
-                </div>
-              </div>
-
-              {/* Details */}
-              <div className="p-4 flex flex-col gap-1.5 border-t border-border">
-                <span className="text-xs text-foreground-muted tracking-widest uppercase font-medium">
-                  {donation.fabric_type}
-                </span>
-                <p className="text-sm font-medium text-foreground line-clamp-2">
-                  {donation.description}
-                </p>
-                <div className="flex items-center justify-between mt-1">
-                  <span className="text-xs text-foreground-muted">
-                    {donation.quantity}
-                  </span>
-                  <span className="text-xs text-foreground-muted">
-                    {donation.location}
-                  </span>
-                </div>
-              </div>
-            </Link>
+              onDelete={requestDelete}
+            />
           ))}
         </div>
       )}
+
+      <Dialog
+        open={isDialogShown}
+        onClose={() => setIsDialogShown(false)}
+        title="Delete Confirmation"
+        type="confirm"
+        message="Are you sure you want to delete this item?"
+        confirmText="Yes, Delete it"
+        cancelText="No, Keep it"
+        onConfirm={confirmDelete}
+        loading={dialogLoading}
+      />
     </div>
   );
 }
