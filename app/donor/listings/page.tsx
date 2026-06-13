@@ -8,8 +8,10 @@ import EmptyState from "@/components/ui/EmptyState";
 import ErrorState from "@/components/ui/ErrorState";
 import { useDeleteDonation, useDonations } from "@/hooks/useDonor";
 import ListingItem from "@/components/donor/ListingItem";
+import UpdateListingModal from "@/components/donor/UpdateListingModal";
 import { useState } from "react";
 import Dialog from "@/components/dashboard/Dialog";
+import { Donation } from "@/types/donation";
 
 export default function ListingsPage() {
   const { data: donations, isLoading, error } = useDonations();
@@ -19,10 +21,16 @@ export default function ListingsPage() {
 
   const [selectedId, setSelectedId] = useState<number | null>(null);
   const [dialogLoading, setDialogLoading] = useState(false);
+  const [editingDonation, setEditingDonation] = useState<Donation | null>(null);
 
   const requestDelete = (id: number) => {
     setSelectedId(id);
     setIsDialogShown(true);
+  };
+
+  const requestEdit = (id: number) => {
+    const item = donations?.find((d) => d.id === id) ?? null;
+    setEditingDonation(item);
   };
 
   const confirmDelete = async () => {
@@ -93,6 +101,7 @@ export default function ListingsPage() {
               donation={donation}
               href={`/donor/listings/${donation.id}`}
               onDelete={requestDelete}
+              onEdit={requestEdit}
             />
           ))}
         </div>
@@ -108,6 +117,16 @@ export default function ListingsPage() {
         cancelText="No, Keep it"
         onConfirm={confirmDelete}
         loading={dialogLoading}
+      />
+
+      <UpdateListingModal
+        open={!!editingDonation}
+        donation={editingDonation}
+        onClose={() => setEditingDonation(null)}
+        onSaved={() => {
+          // close modal handled in modal; optionally refresh UI or show toast
+          setEditingDonation(null);
+        }}
       />
     </div>
   );
