@@ -6,7 +6,6 @@ import { LogOut, User, ChevronDown } from "lucide-react";
 import { DashboardVariant } from "./types";
 import { useAuth } from "@/hooks/useAuth";
 import Dialog from "./Dialog";
-import { Role } from "@/types/user";
 
 interface UserMenuProps {
   variant: DashboardVariant;
@@ -40,16 +39,6 @@ export default function UserMenu({ variant }: UserMenuProps) {
 
   async function handleLogout() {
     logout();
-  }
-
-  function navigate(role: Role): string {
-    if (role === "admin") {
-      return "/admin/profile";
-    } else if (role === "donor") {
-      return "/donor/profile";
-    } else {
-      return "/requester/profile";
-    }
   }
 
   return (
@@ -98,7 +87,11 @@ export default function UserMenu({ variant }: UserMenuProps) {
           <button
             onClick={() => {
               setOpen(false);
-              router.push(`${navigate(user!.role)}`);
+              router.push(
+                isAdmin
+                  ? "/admin/profile"
+                  : `/${user?.role === "donor" ? "donor" : "requester"}/profile`,
+              );
             }}
             className="w-full flex items-center gap-2.5 px-3 py-2.5 text-sm text-foreground-muted hover:text-foreground hover:bg-muted transition-colors"
           >
