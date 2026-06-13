@@ -1,4 +1,3 @@
-// src/app/requester/browse/[id]/page.tsx
 "use client";
 
 import { useState } from "react";
@@ -7,53 +6,9 @@ import { ArrowLeft, MapPin, Package, ArrowRight } from "lucide-react";
 import Link from "next/link";
 import Input from "@/components/ui/Input";
 import { useCreateRequest } from "@/hooks/useRequester";
-
-const MOCK_MATERIALS: Record<
-  string,
-  {
-    id: string;
-    fabric_type: string;
-    quantity: string;
-    description: string;
-    location: string;
-  }
-> = {
-  "1": {
-    id: "1",
-    fabric_type: "Ankara",
-    quantity: "5kg",
-    description: "Assorted ankara prints in good condition, vibrant colours.",
-    location: "Ikeja, Lagos",
-  },
-  "2": {
-    id: "2",
-    fabric_type: "Cotton",
-    quantity: "8kg",
-    description: "White and off-white cotton offcuts from a garment factory.",
-    location: "Yaba, Lagos",
-  },
-  "3": {
-    id: "3",
-    fabric_type: "Denim",
-    quantity: "3kg",
-    description: "Mixed denim remnants, various weights and washes.",
-    location: "Surulere, Lagos",
-  },
-  "4": {
-    id: "4",
-    fabric_type: "Linen",
-    quantity: "6kg",
-    description: "Natural linen blend offcuts, perfect for summer pieces.",
-    location: "VI, Lagos",
-  },
-  "5": {
-    id: "5",
-    fabric_type: "Silk",
-    quantity: "2kg",
-    description: "Silk blend scraps from a bridal atelier.",
-    location: "Lekki, Lagos",
-  },
-};
+import { useDonation } from "@/hooks/useDonor";
+import LoadingState from "@/components/ui/LoadingState";
+import ErrorState from "@/components/ui/ErrorState";
 
 const FABRIC_PURPOSES = [
   "Final year collection",
@@ -66,10 +21,13 @@ const FABRIC_PURPOSES = [
 
 export default function MaterialDetailPage() {
   const { id } = useParams<{ id: string }>();
-  const router = useRouter();
-  const material = MOCK_MATERIALS[id];
 
-  const { mutateAsync, isPending, error } = useCreateRequest();
+  const {
+    data: donation,
+    isLoading,
+    error: fetchError,
+  } = useDonation(id ?? "");
+  const { mutateAsync, isPending, error: requestError } = useCreateRequest();
 
   const [quantityNeeded, setQuantityNeeded] = useState("");
   const [purpose, setPurpose] = useState("");
@@ -77,7 +35,15 @@ export default function MaterialDetailPage() {
   const [purposeError, setPurposeError] = useState("");
   const [submitted, setSubmitted] = useState(false);
 
-  if (!material) {
+  if (isLoading) return <LoadingState title="Loading material..." />;
+  if (fetchError)
+    return (
+      <ErrorState
+        title="Could not load material."
+        description={fetchError.message}
+      />
+    );
+  if (!donation)
     return (
       <div className="flex flex-col items-center justify-center py-20 gap-4 text-center">
         <p className="font-display text-lg text-foreground">
@@ -91,7 +57,6 @@ export default function MaterialDetailPage() {
         </Link>
       </div>
     );
-  }
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -102,7 +67,7 @@ export default function MaterialDetailPage() {
     setPurposeError("");
 
     await mutateAsync({
-      fabric_type: material.fabric_type,
+      fabric_type: donation.fabric_type,
       quantity_needed: quantityNeeded,
       purpose: purpose === "Other" ? customPurpose : purpose,
     });
@@ -126,7 +91,7 @@ export default function MaterialDetailPage() {
           <p className="text-sm text-foreground-muted leading-relaxed">
             We&apos;ve received your request for{" "}
             <span className="text-foreground font-medium">
-              {material.fabric_type}
+              {donation.fabric_type}
             </span>
             . You&apos;ll be notified when it&apos;s reviewed.
           </p>
@@ -141,8 +106,7 @@ export default function MaterialDetailPage() {
           </Link>
           <Link
             href="/requester/browse"
-            className="text-sm bg-card border border-border text-foreground px-4 py-2.5
-                       rounded-xl font-medium hover:bg-background-subtle transition-colors"
+            className="text-sm bg-card border border-border text-foreground px-4 py-2.5 rounded-xl font-medium hover:bg-background-subtle transition-colors"
           >
             Browse more
           </Link>
@@ -170,26 +134,23 @@ export default function MaterialDetailPage() {
         <div className="p-5 flex flex-col gap-3">
           <div className="flex items-center justify-between">
             <span className="text-xs font-medium tracking-widest uppercase text-foreground-muted">
-              {material.fabric_type}
+              {donation.fabric_type}
             </span>
-            <span
-              className="text-xs bg-success/10 text-success px-2.5 py-1
-                             rounded-full font-medium"
-            >
+            <span className="text-xs bg-success/10 text-success px-2.5 py-1 rounded-full font-medium">
               Available
             </span>
           </div>
           <p className="text-sm text-foreground leading-relaxed">
-            {material.description}
+            {donation.description}
           </p>
           <div className="flex items-center justify-between pt-1 border-t border-border">
             <span className="text-sm font-medium text-foreground">
-              {material.quantity} available
+              {donation.quantity} available
             </span>
             <div className="flex items-center gap-1.5">
               <MapPin size={12} className="text-foreground-muted" />
               <span className="text-xs text-foreground-muted">
-                {material.location}
+                {donation.location}
               </span>
             </div>
           </div>
@@ -256,30 +217,19 @@ export default function MaterialDetailPage() {
           </div>
         </div>
 
-        {error && (
-          <p
-            className="text-sm text-destructive bg-destructive/10 border
-                        border-destructive/20 px-4 py-3 rounded-xl"
-          >
-            {error.message}
+        {requestError && (
+          <p className="text-sm text-destructive bg-destructive/10 border border-destructive/20 px-4 py-3 rounded-xl">
+            {requestError.message}
           </p>
         )}
 
         <button
           type="submit"
           disabled={isPending}
-          className="group h-11 w-full flex items-center justify-center gap-2
-                     bg-primary text-primary-foreground rounded-xl font-medium text-sm
-                     hover:bg-primary-hover transition-all duration-200
-                     hover:-translate-y-0.5 hover:shadow-lg
-                     disabled:opacity-60 disabled:cursor-not-allowed
-                     disabled:translate-y-0 disabled:shadow-none"
+          className="group h-11 w-full flex items-center justify-center gap-2 bg-primary text-primary-foreground rounded-xl font-medium text-sm hover:bg-primary-hover transition-all duration-200 hover:-translate-y-0.5 hover:shadow-lg disabled:opacity-60 disabled:cursor-not-allowed disabled:translate-y-0 disabled:shadow-none"
         >
           {isPending ? (
-            <span
-              className="w-4 h-4 border-2 border-primary-foreground/30
-                             border-t-primary-foreground rounded-full animate-spin"
-            />
+            <span className="w-4 h-4 border-2 border-primary-foreground/30 border-t-primary-foreground rounded-full animate-spin" />
           ) : (
             <>
               Submit Request

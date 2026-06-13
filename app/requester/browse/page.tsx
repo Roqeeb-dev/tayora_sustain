@@ -4,8 +4,9 @@ import { useState } from "react";
 import { Search, MapPin, Package, SlidersHorizontal, X } from "lucide-react";
 import Link from "next/link";
 import EmptyState from "@/components/ui/EmptyState";
+import { useAllDonations } from "@/hooks/useDonor";
 
-// Mock until materials service exists
+// Fabric types
 const FABRIC_TYPES = [
   "All",
   "Cotton",
@@ -18,52 +19,23 @@ const FABRIC_TYPES = [
   "Mixed",
 ];
 
-const MOCK_MATERIALS = [
-  {
-    id: "1",
-    fabric_type: "Ankara",
-    quantity: "5kg",
-    description: "Assorted ankara prints in good condition, vibrant colours.",
-    location: "Ikeja, Lagos",
-    status: "available",
-  },
-  {
-    id: "2",
-    fabric_type: "Cotton",
-    quantity: "8kg",
-    description: "White and off-white cotton offcuts from a garment factory.",
-    location: "Yaba, Lagos",
-    status: "available",
-  },
-  {
-    id: "3",
-    fabric_type: "Denim",
-    quantity: "3kg",
-    description: "Mixed denim remnants, various weights and washes.",
-    location: "Surulere, Lagos",
-    status: "available",
-  },
-  {
-    id: "4",
-    fabric_type: "Linen",
-    quantity: "6kg",
-    description: "Natural linen blend offcuts, perfect for summer pieces.",
-    location: "VI, Lagos",
-    status: "available",
-  },
-];
-
 export default function BrowsePage() {
   const [search, setSearch] = useState("");
   const [activeType, setActiveType] = useState("All");
   const [showFilter, setShowFilter] = useState(false);
 
-  const filtered = MOCK_MATERIALS.filter((m) => {
+  const { data: donations } = useAllDonations();
+
+  const availableMaterials = (donations ?? []).filter(
+    (d) => String(d.status).toLowerCase() === "available",
+  );
+
+  const filtered = availableMaterials.filter((m) => {
     const matchesType = activeType === "All" || m.fabric_type === activeType;
     const matchesSearch =
-      m.description.toLowerCase().includes(search.toLowerCase()) ||
-      m.fabric_type.toLowerCase().includes(search.toLowerCase()) ||
-      m.location.toLowerCase().includes(search.toLowerCase());
+      String(m.description).toLowerCase().includes(search.toLowerCase()) ||
+      String(m.fabric_type).toLowerCase().includes(search.toLowerCase()) ||
+      String(m.location).toLowerCase().includes(search.toLowerCase());
     return matchesType && matchesSearch;
   });
 

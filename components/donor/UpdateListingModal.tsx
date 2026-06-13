@@ -4,7 +4,6 @@ import { useEffect, useState } from "react";
 import { createPortal } from "react-dom";
 import { Donation } from "@/types/donation";
 import { useUpdateDonation } from "@/hooks/useDonor";
-import { Loader2 } from "lucide-react";
 
 interface Props {
   open: boolean;
