@@ -37,7 +37,7 @@ export default function DonorLayout({
 }
 
 export const metadata: Metadata = {
-  title: "Donor | Tayora Sustain",
+  title: "Donor",
   description:
     "Donor dashboard — manage listings, uploads, and pickups on Tayora Sustain.",
 };

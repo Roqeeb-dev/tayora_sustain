@@ -25,7 +25,7 @@ export default function AdminLayout({
 }
 
 export const metadata: Metadata = {
-  title: "Admin | Tayora Sustain",
+  title: "Admin",
   description:
     "Admin dashboard — manage listings, requests, logistics and impact metrics.",
 };
