@@ -25,7 +25,7 @@ const CONTENT = {
     cta: {
       primary: {
         label: "Start Donating",
-        href: "/auth/register?role=donor",
+        href: "/register?role=donor",
       },
       secondary: { label: "See how it works", href: "/#how-it-works" },
     },
@@ -49,7 +49,7 @@ const CONTENT = {
     cta: {
       primary: {
         label: "Browse Materials",
-        href: "/auth/register?role=requester",
+        href: "/register?role=requester",
       },
       secondary: { label: "See how it works", href: "/#how-it-works" },
     },
@@ -128,9 +128,7 @@ export default function Hero() {
               </Link>
               <Link
                 href={content.cta.secondary.href}
-                className="inline-flex items-center justify-center gap-2 bg-card border
-                           border-border text-foreground px-6 py-3.5 rounded-xl font-medium
-                           hover:bg-background-subtle hover:border-primary transition-all duration-200"
+                className="inline-flex items-center justify-center gap-2 bg-card border border-border text-foreground px-6 py-3.5 rounded-xl font-medium hover:bg-background-subtle hover:border-primary transition-all duration-200"
               >
                 {content.cta.secondary.label}
               </Link>

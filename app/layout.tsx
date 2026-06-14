@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Fraunces, DM_Sans } from "next/font/google";
 import "./globals.css";
 import { QueryProvider } from "@/providers/QueryProvider";
+import { Analytics } from "@vercel/analytics/next";
 
 const fraunces = Fraunces({
   variable: "--font-fraunces",
@@ -32,21 +33,21 @@ export const metadata: Metadata = {
   ],
   authors: [{ name: "Tayora Sustain" }],
   creator: "Tayora Sustain",
-  metadataBase: new URL("https://tayorasustain.com"),
+  metadataBase: new URL("https://tayorasustain.vercel.app/"),
   openGraph: {
     type: "website",
     locale: "en_NG",
-    url: "https://tayorasustain.com",
+    url: "https://tayorasustain.vercel.app/",
     siteName: "Tayora Sustain",
     title: "Tayora Sustain — Turning waste into opportunities",
     description:
       "Submit textile waste, request materials, or track the full upcycling cycle — all in one platform.",
     images: [
       {
-        url: "/og-image.png",
+        url: "/tayora_logo.png",
         width: 1200,
         height: 630,
-        alt: "Tayora Sustain",
+        alt: "Tayora Sustain logo",
       },
     ],
   },
@@ -55,7 +56,7 @@ export const metadata: Metadata = {
     title: "Tayora Sustain",
     description:
       "Connecting textile waste donors with material requesters. Fashion waste, reimagined.",
-    images: ["/og-image.png"],
+    images: ["/tayora_logo.png"],
   },
   icons: {
     icon: "/favicon.ico",

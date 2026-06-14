@@ -26,8 +26,8 @@ export default function BrowsePage() {
 
   const { data: donations } = useAllDonations();
 
-  const availableMaterials = (donations ?? []).filter(
-    (d) => String(d.status).toLowerCase() === "available",
+  const availableMaterials = (donations ?? []).filter((d) =>
+    ["available", "approved"].includes(String(d.status).toLowerCase()),
   );
 
   const filtered = availableMaterials.filter((m) => {
