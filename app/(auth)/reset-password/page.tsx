@@ -1,11 +1,15 @@
-import type { Metadata } from "next";
+import { Suspense } from "react";
+import AuthBrandPanel from "@/components/auth/AuthBrandPanel";
 import ResetPasswordClient from "./Client";
-
-export const metadata: Metadata = {
-  title: "Reset password | Tayora Sustain",
-  description: "Set a new password for your Tayora Sustain account.",
-};
+import LoadingState from "@/components/ui/LoadingState";
 
 export default function ResetPasswordPage() {
-  return <ResetPasswordClient />;
+  return (
+    <>
+      <Suspense fallback={<LoadingState title="Loading..." />}>
+        <ResetPasswordClient />
+      </Suspense>
+      <AuthBrandPanel />
+    </>
+  );
 }

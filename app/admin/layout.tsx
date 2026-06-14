@@ -4,7 +4,7 @@ import { NavItem } from "@/components/dashboard/types";
 
 const NAV: NavItem[] = [
   { label: "Dashboard", href: "/admin/dashboard", icon: "LayoutDashboard" },
-  { label: "Listings", href: "/admin/listings", icon: "Package", badge: 12 },
+  { label: "Listings", href: "/admin/listings", icon: "Package" },
   { label: "Requests", href: "/admin/requests", icon: "ClipboardList" },
   { label: "Matching", href: "/admin/matching", icon: "GitMerge" },
   { label: "Logistics", href: "/admin/logistics", icon: "Truck" },
@@ -25,7 +25,7 @@ export default function AdminLayout({
 }
 
 export const metadata: Metadata = {
-  title: "Admin | Tayora Sustain",
+  title: "Admin",
   description:
     "Admin dashboard — manage listings, requests, logistics and impact metrics.",
 };

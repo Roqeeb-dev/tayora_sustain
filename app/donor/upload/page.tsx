@@ -7,16 +7,17 @@ import Image from "next/image";
 import Input from "@/components/ui/Input";
 import PageHeader from "@/components/dashboard/PageHeader";
 import { useCreateDonation } from "@/hooks/useDonor";
+import { uploadImage, UploadError } from "@/lib/uploadImage";
 
 const FABRIC_TYPES = [
-  "Cotton",
-  "Denim",
-  "Ankara",
-  "Linen",
-  "Silk",
-  "Polyester",
-  "Wool",
-  "Mixed",
+  "cotton",
+  "denim",
+  "ankara",
+  "linen",
+  "silk",
+  "polyester",
+  "wool",
+  "mixed",
 ];
 
 export default function UploadPage() {
@@ -31,6 +32,8 @@ export default function UploadPage() {
   const [imagePreview, setImagePreview] = useState<string | null>(null);
   const [imageError, setImageError] = useState("");
   const [fabricError, setFabricError] = useState("");
+  const [uploadingImage, setUploadingImage] = useState(false);
+  const [uploadError, setUploadError] = useState("");
 
   const handleImage = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -47,6 +50,7 @@ export default function UploadPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
     let valid = true;
     if (!imageFile) {
       setImageError("Please upload a photo of the textile.");
@@ -58,8 +62,24 @@ export default function UploadPage() {
     }
     if (!valid) return;
 
+    setUploadError("");
+
+    let imageUrl: string;
+    try {
+      setUploadingImage(true);
+      imageUrl = await uploadImage(imageFile!);
+    } catch (err) {
+      setUploadError(
+        err instanceof UploadError ? err.message : "Could not upload image.",
+      );
+      setUploadingImage(false);
+      return;
+    } finally {
+      setUploadingImage(false);
+    }
+
     await mutateAsync({
-      image_url: imageFile!.name,
+      image_url: imageUrl,
       fabric_type: fabricType.toLowerCase(),
       description,
       quantity,
@@ -152,7 +172,12 @@ export default function UploadPage() {
                       setFabricType(type);
                       setFabricError("");
                     }}
-                    className={`px-4 py-2 rounded-xl text-sm border transition-all duration-150 ${fabricType === type ? "bg-primary text-primary-foreground border-primary" : "bg-background text-foreground-muted border-border hover:border-primary/40 hover:text-foreground"}`}
+                    className={`px-4 py-2 rounded-xl text-sm border transition-all duration-150
+                                ${
+                                  fabricType === type
+                                    ? "bg-primary text-primary-foreground border-primary"
+                                    : "bg-background text-foreground-muted border-border hover:border-primary/40 hover:text-foreground"
+                                }`}
                   >
                     {type}
                   </button>
@@ -207,6 +232,12 @@ export default function UploadPage() {
             </div>
           </div>
 
+          {uploadError && (
+            <p className="text-sm text-destructive bg-destructive/10 border border-destructive/20 px-4 py-3 rounded-xl">
+              {uploadError}
+            </p>
+          )}
+
           {error && (
             <p className="text-sm text-destructive bg-destructive/10 border border-destructive/20 px-4 py-3 rounded-xl">
               {error.message}
@@ -215,10 +246,15 @@ export default function UploadPage() {
 
           <button
             type="submit"
-            disabled={isPending}
+            disabled={isPending || uploadingImage}
             className="group h-11 w-full flex items-center justify-center gap-2 bg-primary text-primary-foreground rounded-xl font-medium text-sm hover:bg-primary-hover transition-all duration-200 hover:-translate-y-0.5 hover:shadow-lg disabled:opacity-60 disabled:cursor-not-allowed disabled:translate-y-0 disabled:shadow-none"
           >
-            {isPending ? (
+            {uploadingImage ? (
+              <>
+                <span className="w-4 h-4 border-2 border-primary-foreground/30 border-t-primary-foreground rounded-full animate-spin" />
+                Uploading image...
+              </>
+            ) : isPending ? (
               <span className="w-4 h-4 border-2 border-primary-foreground/30 border-t-primary-foreground rounded-full animate-spin" />
             ) : (
               <>

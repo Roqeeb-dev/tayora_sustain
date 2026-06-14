@@ -1,6 +1,6 @@
 "use client";
 
-import { Menu, Bell } from "lucide-react";
+import { Menu } from "lucide-react";
 import { DashboardVariant } from "./types";
 import UserMenu from "./UserMenu";
 
@@ -46,28 +46,8 @@ export default function Topbar({
       {/* Action slot */}
       {action && <div className="hidden sm:block">{action}</div>}
 
-      {/* Notification bell */}
-      <NotificationBell />
-
       {/* User menu */}
       <UserMenu variant={variant} />
     </header>
-  );
-}
-
-function NotificationBell() {
-  const count = 3;
-
-  return (
-    <button
-      className="relative p-2 rounded-lg text-foreground-muted hover:text-foreground
-                 hover:bg-muted transition-colors"
-      aria-label="Notifications"
-    >
-      <Bell size={18} />
-      {count > 0 && (
-        <span className="absolute top-1.5 right-1.5 w-2 h-2 rounded-full bg-destructive" />
-      )}
-    </button>
   );
 }

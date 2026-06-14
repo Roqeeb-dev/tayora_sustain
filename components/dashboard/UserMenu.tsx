@@ -87,7 +87,11 @@ export default function UserMenu({ variant }: UserMenuProps) {
           <button
             onClick={() => {
               setOpen(false);
-              router.push(isAdmin ? "/admin/profile" : "/profile");
+              router.push(
+                isAdmin
+                  ? "/admin/profile"
+                  : `/${user?.role === "donor" ? "donor" : "requester"}/profile`,
+              );
             }}
             className="w-full flex items-center gap-2.5 px-3 py-2.5 text-sm text-foreground-muted hover:text-foreground hover:bg-muted transition-colors"
           >

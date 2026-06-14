@@ -36,7 +36,7 @@ export default function RequesterLayout({
 }
 
 export const metadata: Metadata = {
-  title: "Requester | Tayora Sustain",
+  title: "Requester",
   description:
     "Requester dashboard — browse materials, make requests, and track activity.",
 };
