@@ -1,62 +1,90 @@
+"use client";
+
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import * as adminService from "@/services/admin.service";
-import type { ImpactResponse } from "@/services/admin.service";
-import type { Donation } from "@/types/donation";
-import type { Request as ReqType } from "@/types/request";
+import {
+  approveDonation,
+  rejectDonation,
+  categorizeDonation,
+  approveRequest,
+  rejectRequest,
+  getImpact,
+} from "@/services/admin.service";
+import { donorKeys } from "@/hooks/useDonor";
+import { requesterKeys } from "@/hooks/useRequester";
 
-export function useAdmin() {
+export const adminKeys = {
+  impact: ["admin", "impact"] as const,
+};
+
+export function useImpact() {
+  return useQuery({
+    queryKey: adminKeys.impact,
+    queryFn: getImpact,
+    staleTime: 1000 * 60 * 2,
+  });
+}
+
+export function useApproveDonation() {
   const queryClient = useQueryClient();
-
-  const impactQuery = useQuery<ImpactResponse, Error>(
-    ["admin", "impact"],
-    adminService.getImpact,
-    {
-      retry: 1,
-      refetchOnWindowFocus: false,
+  return useMutation({
+    mutationFn: (donation_id: string) => approveDonation(donation_id),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: donorKeys.donations });
+      queryClient.invalidateQueries({ queryKey: donorKeys.allDonations });
+      queryClient.invalidateQueries({ queryKey: adminKeys.impact });
     },
-  );
+  });
+}
 
-  const approveDonationMutation = useMutation<Donation, Error, string>(
-    (donationId: string) => adminService.approveDonation(donationId),
-    {
-      onSuccess: () => queryClient.invalidateQueries(["admin", "impact"]),
+export function useRejectDonation() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (donation_id: string) => rejectDonation(donation_id),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: donorKeys.donations });
+      queryClient.invalidateQueries({ queryKey: donorKeys.allDonations });
     },
-  );
+  });
+}
 
-  const rejectDonationMutation = useMutation<Donation, Error, string>(
-    (donationId: string) => adminService.rejectDonation(donationId),
-    {
-      onSuccess: () => queryClient.invalidateQueries(["admin", "impact"]),
+export function useCategorizeDonation() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: ({
+      donation_id,
+      category,
+    }: {
+      donation_id: string;
+      category: "redistribution" | "upcycling" | "pickup";
+    }) => categorizeDonation(donation_id, category),
+    onSuccess: (_, { donation_id }) => {
+      queryClient.invalidateQueries({ queryKey: donorKeys.allDonations });
+      queryClient.invalidateQueries({
+        queryKey: donorKeys.donation(donation_id),
+      });
     },
-  );
+  });
+}
 
-  const categorizeDonationMutation = useMutation<Donation, Error, string>(
-    (donationId: string) => adminService.categorizeDonation(donationId),
-    {
-      onSuccess: () => queryClient.invalidateQueries(["admin", "impact"]),
+export function useApproveRequest() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (request_id: string) => approveRequest(request_id),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: requesterKeys.requests });
+      queryClient.invalidateQueries({ queryKey: requesterKeys.allRequests });
+      queryClient.invalidateQueries({ queryKey: adminKeys.impact });
     },
-  );
+  });
+}
 
-  const approveRequestMutation = useMutation<ReqType, Error, string>(
-    (requestId: string) => adminService.approveRequest(requestId),
-    {
-      onSuccess: () => queryClient.invalidateQueries(["admin", "impact"]),
+export function useRejectRequest() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (request_id: string) => rejectRequest(request_id),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: requesterKeys.requests });
+      queryClient.invalidateQueries({ queryKey: requesterKeys.allRequests });
     },
-  );
-
-  const rejectRequestMutation = useMutation<ReqType, Error, string>(
-    (requestId: string) => adminService.rejectRequest(requestId),
-    {
-      onSuccess: () => queryClient.invalidateQueries(["admin", "impact"]),
-    },
-  );
-
-  return {
-    impactQuery,
-    approveDonationMutation,
-    rejectDonationMutation,
-    categorizeDonationMutation,
-    approveRequestMutation,
-    rejectRequestMutation,
-  };
+  });
 }

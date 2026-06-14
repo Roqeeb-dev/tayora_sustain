@@ -7,11 +7,8 @@ import StatusBadge from "@/components/dashboard/StatusBadge";
 import LoadingState from "@/components/ui/LoadingState";
 import EmptyState from "@/components/ui/EmptyState";
 import ErrorState from "@/components/ui/ErrorState";
-import {
-  useAllRequests,
-  useUpdateRequest,
-  useDeleteRequest,
-} from "@/hooks/useRequester";
+import { useAllRequests, useDeleteRequest } from "@/hooks/useRequester";
+import { useApproveRequest, useRejectRequest } from "@/hooks/useAdmin";
 import { Request, RequestStatus } from "@/types/request";
 
 const FILTERS: { label: string; value: RequestStatus | "all" }[] = [
@@ -23,12 +20,11 @@ const FILTERS: { label: string; value: RequestStatus | "all" }[] = [
 ];
 
 function RequestRow({ request }: { request: Request }) {
-  const { mutate: updateRequest, isPending: updating } = useUpdateRequest(
-    String(request.id),
-  );
-  const { mutate: deleteRequest, isPending: deleting } = useDeleteRequest();
+  const { mutate: approve, isPending: approving } = useApproveRequest();
+  const { mutate: reject, isPending: rejecting } = useRejectRequest();
+  const { mutate: remove, isPending: deleting } = useDeleteRequest();
 
-  const busy = updating || deleting;
+  const busy = approving || rejecting || deleting;
 
   return (
     <div className="flex items-center gap-4 px-5 py-3.5 hover:bg-background-subtle transition-colors">
@@ -50,41 +46,52 @@ function RequestRow({ request }: { request: Request }) {
 
       <StatusBadge status={request.status} />
 
-      {/* Inline actions */}
       <div className="flex items-center gap-2 shrink-0">
         {request.status === "open" && (
           <>
             <button
-              onClick={() => updateRequest({ status: "matched" } as any)}
+              onClick={() => approve(String(request.id))}
               disabled={busy}
               className="w-7 h-7 rounded-lg bg-success/10 text-success
                          hover:bg-success/20 flex items-center justify-center
                          transition-colors disabled:opacity-50"
-              title="Approve / Match"
+              title="Approve"
             >
-              <CheckCircle size={14} />
+              {approving ? (
+                <span className="w-3 h-3 border border-success/40 border-t-success rounded-full animate-spin" />
+              ) : (
+                <CheckCircle size={14} />
+              )}
             </button>
             <button
-              onClick={() => updateRequest({ status: "closed" } as any)}
+              onClick={() => reject(String(request.id))}
               disabled={busy}
               className="w-7 h-7 rounded-lg bg-destructive/10 text-destructive
                          hover:bg-destructive/20 flex items-center justify-center
                          transition-colors disabled:opacity-50"
               title="Reject / Close"
             >
-              <XCircle size={14} />
+              {rejecting ? (
+                <span className="w-3 h-3 border border-destructive/40 border-t-destructive rounded-full animate-spin" />
+              ) : (
+                <XCircle size={14} />
+              )}
             </button>
           </>
         )}
         <button
-          onClick={() => deleteRequest(String(request.id))}
+          onClick={() => remove(String(request.id))}
           disabled={busy}
           className="w-7 h-7 rounded-lg bg-muted text-foreground-muted
                      hover:bg-destructive/10 hover:text-destructive
                      flex items-center justify-center transition-colors disabled:opacity-50"
           title="Delete"
         >
-          <Trash2 size={13} />
+          {deleting ? (
+            <span className="w-3 h-3 border border-foreground-muted/40 border-t-foreground-muted rounded-full animate-spin" />
+          ) : (
+            <Trash2 size={13} />
+          )}
         </button>
       </div>
     </div>
@@ -105,7 +112,6 @@ export default function AdminRequestsPage() {
         description="Every material request submitted across the platform."
       />
 
-      {/* Filter pills */}
       <div className="flex flex-wrap gap-2 mb-6">
         {FILTERS.map((f) => (
           <button
@@ -129,14 +135,12 @@ export default function AdminRequestsPage() {
       </div>
 
       {isLoading && <LoadingState title="Loading requests..." />}
-
       {error && (
         <ErrorState
           title="Could not load requests."
           description={error.message}
         />
       )}
-
       {!isLoading && !error && filtered.length === 0 && (
         <EmptyState
           icon={ClipboardList}
@@ -148,7 +152,6 @@ export default function AdminRequestsPage() {
           }
         />
       )}
-
       {!isLoading && filtered.length > 0 && (
         <div className="bg-card border border-border rounded-2xl overflow-hidden">
           <div className="divide-y divide-border">
