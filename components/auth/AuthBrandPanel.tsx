@@ -59,8 +59,7 @@ export default function AuthBrandPanel() {
             </span>
           </h2>
           <p className="text-foreground-muted text-sm leading-relaxed max-w-xs">
-            Connecting textile waste with the hands that need it — and turning
-            what's left into something new.
+            Turning waste into opportunities.
           </p>
         </div>
 

@@ -36,7 +36,10 @@ const REASONS = [
 
 export default function Impact() {
   return (
-    <section className="bg-background py-24 lg:py-32 border-t border-border">
+    <section
+      id="impact"
+      className="bg-background py-24 lg:py-32 border-t border-border"
+    >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Eyebrow */}
         <span className="inline-flex items-center gap-2 text-xs font-medium tracking-widest uppercase text-foreground-muted mb-14">

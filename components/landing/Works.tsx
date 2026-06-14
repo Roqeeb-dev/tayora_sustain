@@ -82,7 +82,10 @@ function WorkImage({
 
 export default function Works() {
   return (
-    <section className="bg-background-subtle py-24 lg:py-32 overflow-hidden">
+    <section
+      id="products"
+      className="bg-background-subtle py-24 lg:py-32 overflow-hidden"
+    >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header */}
         <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-6 mb-16">

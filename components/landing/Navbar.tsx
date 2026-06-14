@@ -7,9 +7,8 @@ import Logo from "../ui/Logo";
 
 const NAV_LINKS = [
   { label: "How It Works", href: "/#how-it-works" },
-  { label: "For Donors", href: "/#donors" },
-  { label: "For Requesters", href: "/#requesters" },
-  { label: "About", href: "/#about" },
+  { label: "Products", href: "/#products" },
+  { label: "Impact", href: "/#impact" },
 ];
 
 export default function Navbar() {

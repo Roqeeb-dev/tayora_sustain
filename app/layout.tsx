@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Fraunces, DM_Sans } from "next/font/google";
 import "./globals.css";
 import { QueryProvider } from "@/providers/QueryProvider";
+import { Analytics } from "@vercel/analytics/next";
 
 const fraunces = Fraunces({
   variable: "--font-fraunces",
@@ -32,11 +33,11 @@ export const metadata: Metadata = {
   ],
   authors: [{ name: "Tayora Sustain" }],
   creator: "Tayora Sustain",
-  metadataBase: new URL("https://tayorasustain.com"),
+  metadataBase: new URL("https://tayorasustain.vercel.app/"),
   openGraph: {
     type: "website",
     locale: "en_NG",
-    url: "https://tayorasustain.com",
+    url: "https://tayorasustain.vercel.app/",
     siteName: "Tayora Sustain",
     title: "Tayora Sustain — Turning waste into opportunities",
     description:
