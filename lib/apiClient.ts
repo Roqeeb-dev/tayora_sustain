@@ -99,7 +99,7 @@ export const apiClient = {
     return this.requestForm<T>(url, "POST", body);
   },
 
-  patch<T, B = unknown>(url: string, body: B) {
+  patch<T, B = unknown>(url: string, body?: B) {
     return this.request<T>(url, {
       method: "PATCH",
       body: JSON.stringify(body),
