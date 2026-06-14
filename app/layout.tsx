@@ -44,10 +44,10 @@ export const metadata: Metadata = {
       "Submit textile waste, request materials, or track the full upcycling cycle — all in one platform.",
     images: [
       {
-        url: "/og-image.png",
+        url: "/tayora_logo.png",
         width: 1200,
         height: 630,
-        alt: "Tayora Sustain",
+        alt: "Tayora Sustain logo",
       },
     ],
   },
@@ -56,7 +56,7 @@ export const metadata: Metadata = {
     title: "Tayora Sustain",
     description:
       "Connecting textile waste donors with material requesters. Fashion waste, reimagined.",
-    images: ["/og-image.png"],
+    images: ["/tayora_logo.png"],
   },
   icons: {
     icon: "/favicon.ico",
