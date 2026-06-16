@@ -63,7 +63,7 @@ export default function Hero() {
   return (
     <section className="relative min-h-screen bg-background flex flex-col">
       {/* Background texture */}
-      <div className="absolute inset-0 bg-[url('/images/hero-placeholder.jpg')] bg-cover bg-center opacity-10" />
+      <div className="absolute inset-0 bg-[url('/hero-bg.jpg')] bg-cover bg-center opacity-10" />
       <div
         className="absolute inset-0 opacity-[0.03]"
         style={{

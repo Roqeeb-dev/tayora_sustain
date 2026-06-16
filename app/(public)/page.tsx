@@ -5,7 +5,7 @@ import Works from "@/components/landing/Works";
 import Impact from "@/components/landing/Impact";
 
 export const metadata: Metadata = {
-  title: "Home | Tayora Sustain",
+  title: "Home",
   description:
     "Turn textile waste into opportunity — submit, request, and repurpose fabric through Tayora Sustain.",
 };
