@@ -3,6 +3,7 @@ import DashboardShell from "@/components/dashboard/DashboardShell";
 import { NavItem } from "@/components/dashboard/types";
 import Link from "next/link";
 import { Search } from "lucide-react";
+import AuthGuard from "@/components/dashboard/AuthGuard";
 
 const NAV: NavItem[] = [
   { label: "Dashboard", href: "/requester/dashboard", icon: "LayoutDashboard" },
@@ -17,21 +18,23 @@ export default function RequesterLayout({
   children: React.ReactNode;
 }) {
   return (
-    <DashboardShell
-      navItems={NAV}
-      variant="user"
-      topbarAction={
-        <Link
-          href="/requester/browse"
-          className="inline-flex items-center gap-2 text-sm bg-primary text-primary-foreground px-4 py-2 rounded-xl hover:bg-primary-hover transition-colors font-medium"
-        >
-          <Search size={14} />
-          Browse Materials
-        </Link>
-      }
-    >
-      {children}
-    </DashboardShell>
+    <AuthGuard allowedRole="requester">
+      <DashboardShell
+        navItems={NAV}
+        variant="user"
+        topbarAction={
+          <Link
+            href="/requester/browse"
+            className="inline-flex items-center gap-2 text-sm bg-primary text-primary-foreground px-4 py-2 rounded-xl hover:bg-primary-hover transition-colors font-medium"
+          >
+            <Search size={14} />
+            Browse Materials
+          </Link>
+        }
+      >
+        {children}
+      </DashboardShell>
+    </AuthGuard>
   );
 }
 

@@ -3,6 +3,7 @@ import DashboardShell from "@/components/dashboard/DashboardShell";
 import { NavItem } from "@/components/dashboard/types";
 import Link from "next/link";
 import { Upload } from "lucide-react";
+import AuthGuard from "@/components/dashboard/AuthGuard";
 
 const NAV: NavItem[] = [
   { label: "Dashboard", href: "/donor/dashboard", icon: "LayoutDashboard" },
@@ -17,22 +18,24 @@ export default function DonorLayout({
   children: React.ReactNode;
 }) {
   return (
-    <DashboardShell
-      navItems={NAV}
-      variant="user"
-      topbarAction={
-        <Link
-          href="/donor/upload"
-          className="inline-flex items-center gap-2 text-sm bg-primary text-primary-foreground
-                     px-4 py-2 rounded-xl hover:bg-primary-hover transition-colors font-medium"
-        >
-          <Upload size={14} />
-          Upload Waste
-        </Link>
-      }
-    >
-      {children}
-    </DashboardShell>
+    <AuthGuard allowedRole="donor">
+      <DashboardShell
+        navItems={NAV}
+        variant="user"
+        topbarAction={
+          <Link
+            href="/donor/upload"
+            className="inline-flex items-center gap-2 text-sm bg-primary text-primary-foreground
+                       px-4 py-2 rounded-xl hover:bg-primary-hover transition-colors font-medium"
+          >
+            <Upload size={14} />
+            Upload Waste
+          </Link>
+        }
+      >
+        {children}
+      </DashboardShell>
+    </AuthGuard>
   );
 }
 
