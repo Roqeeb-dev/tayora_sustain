@@ -11,19 +11,12 @@ export class ApiError extends Error {
 
 const baseUrl = process.env.NEXT_PUBLIC_API_URL ?? "";
 
-let defaultHeaders: Record<string, string> = {};
-
 export const apiClient = {
-  setAuthToken(token: string | null) {
-    if (token) defaultHeaders["Authorization"] = token;
-    else delete defaultHeaders["Authorization"];
-  },
   async request<T>(url: string, options: RequestInit = {}): Promise<T> {
     const res = await fetch(baseUrl + url, {
       method: options.method ?? "GET",
       headers: {
         "Content-Type": "application/json",
-        ...defaultHeaders,
         ...options.headers,
       },
       body: options.body,
@@ -57,9 +50,6 @@ export const apiClient = {
   ): Promise<T> {
     const res = await fetch(baseUrl + url, {
       method,
-      headers: {
-        ...defaultHeaders,
-      },
       body,
       credentials: "include",
     });
