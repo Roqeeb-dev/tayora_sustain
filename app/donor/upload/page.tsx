@@ -11,13 +11,16 @@ import { uploadImage, UploadError } from "@/lib/uploadImage";
 
 const FABRIC_TYPES = [
   "cotton",
-  "denim",
-  "ankara",
-  "linen",
   "silk",
+  "denim",
+  "linen",
   "polyester",
   "wool",
-  "mixed",
+  "nylon",
+  "lycra",
+  "chiffon",
+  "velvet",
+  "other",
 ];
 
 export default function UploadPage() {
@@ -172,7 +175,7 @@ export default function UploadPage() {
                       setFabricType(type);
                       setFabricError("");
                     }}
-                    className={`px-4 py-2 rounded-xl text-sm border transition-all duration-150
+                    className={`px-4 py-2 rounded-sm text-sm border transition-all duration-150
                                 ${
                                   fabricType === type
                                     ? "bg-primary text-primary-foreground border-primary"
