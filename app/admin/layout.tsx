@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import DashboardShell from "@/components/dashboard/DashboardShell";
 import { NavItem } from "@/components/dashboard/types";
+import AuthGuard from "@/components/dashboard/AuthGuard";
 
 const NAV: NavItem[] = [
   { label: "Dashboard", href: "/admin/dashboard", icon: "LayoutDashboard" },
@@ -18,9 +19,11 @@ export default function AdminLayout({
   children: React.ReactNode;
 }) {
   return (
-    <DashboardShell navItems={NAV} variant="admin">
-      {children}
-    </DashboardShell>
+    <AuthGuard allowedRole="admin">
+      <DashboardShell navItems={NAV} variant="admin">
+        {children}
+      </DashboardShell>
+    </AuthGuard>
   );
 }
 

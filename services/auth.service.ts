@@ -69,13 +69,12 @@ export async function login(payload: LoginPayload): Promise<LoginResponse> {
       "/auth/login",
       payload,
     );
-    apiClient.setAuthToken(`${res.token_type} ${res.access_token}`);
 
     return {
       access_token: res.access_token,
       token_type: res.token_type,
       role: res.role,
-      user: res.user,
+      user: normalizeUser(res.user as unknown as ServerUser),
     };
   } catch (err) {
     if (err instanceof ApiError) {
@@ -90,7 +89,6 @@ export async function login(payload: LoginPayload): Promise<LoginResponse> {
 export async function logout(): Promise<void> {
   try {
     await apiClient.post("/auth/logout");
-    apiClient.setAuthToken(null);
   } catch {
     throw new Error("Logout failed. Please try again.");
   }
